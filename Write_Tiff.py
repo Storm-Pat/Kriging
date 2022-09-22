@@ -1,7 +1,7 @@
 import numpy as np
 import rasterio
 #masking function alhumduallah
-def write_file(z,df,gridx,gridy):
+def write_file(z,gridx,gridy):
     #making georeference
     #first defining domain and range of the projection, len x y have to be flipped respectivly for the correct resolution to hold.
     ### MAKE USER INPUT VARIABLES

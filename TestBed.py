@@ -25,7 +25,7 @@ if __name__ == '__main__':
     #we pass shape to mask the interpolation
     z,ss,gridx,gridy = Kriging.kriging(df,shape)
     #writting the tiff function, the grid is passed to define resolution, data frame defines domain and range,z for values
-    Write_Tiff.write_file(z,df,gridx,gridy)
+    Write_Tiff.write_file(z,gridx,gridy)
     #clipping the tif here, using the cookie cutter and outputted tiff under write tiff function.
     Clip.clip()
 
