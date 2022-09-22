@@ -9,12 +9,12 @@ load the shapefile into the program
 The program should run and output the above 3 things.
 
 KRIGING TYPES:
-Best Results: Spherical(nlag ~= 20), *Exponential(nlag ~= 8), Power(n~=20)
-Ok Tesult: **Gaussian (nlags ~=20)
-Don't bother result: Linear (nlag ~=15)
-*Breaks at high value, best result is nlag number before breaking
-**Breaks at low values, for example nlag=6
---Recomended to keep weights on (makes a big difference), and exact values equal to true (tho exact values on or off dont effect the result noticably)
+Best Results: Spherical(nlag ~= 20), *Exponential(nlag ~= 8), Power(n~=20).
+Ok Tesult: **Gaussian (nlags ~=20).
+Don't bother result: Linear (nlag ~=15).
+*Breaks at high value, best result is nlag number before breaking.
+**Breaks at low values, for example nlag=6.
+--Recomended to keep weights on (makes a big difference), and exact values equal to true (tho exact values on or off dont effect the result noticably).
 
 VARIOGRAM NOTES:
 Variograms are nice, as they allow you to see the interpolation preformance before the execution
