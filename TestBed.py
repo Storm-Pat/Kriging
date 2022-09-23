@@ -6,6 +6,7 @@ import Conc
 import Write_Tiff
 import Clip
 import Repo
+import Chauv
 import tkinter as Tk
 from tkinter import *
 #multiprocessing function
@@ -13,15 +14,15 @@ from tkinter import *
 #main function
 if __name__ == '__main__':
     #Set up gui
-    gui = Tk(className='GENEX script-main input')
-    gui.geometry("340x460")
+    #gui = Tk(className='GENEX script-main input')
+    #gui.geometry("340x460")
     #put csvs here
     #put og shapes
     #LONG
     #LAT
     #Nlags
     #booleans (weight and exact values)
-    gui.mainloop()
+    #gui.mainloop()
 
     #TODO, Have user enter path to the csv files, remeber to fix path in conc function
     #TODO, Add a user defined domain and range, cause shape file D-R varies wildley, maybe can auto in future.
@@ -41,6 +42,7 @@ if __name__ == '__main__':
     #TODO: ADD CLEANNG ALGORITHM
     #cleaning algorithm
     #returns chosen dataframe
+    Chauv.chauv(df)
 
     #writing shape file
     Write_Shape.write_file(df)
