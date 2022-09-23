@@ -9,5 +9,7 @@ def conc(direct):
     df = pd.concat([pd.read_csv(f,names=['Latitude','Longitude','Depth_m','x','y','z','Time']) for f in all_files])
     #setting program directory back to home
     os.chdir(direct)
+    #settings the depth values negitive
+    df.iloc[:,2] = -1*df.iloc[:,2]
     return df
 

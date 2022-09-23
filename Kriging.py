@@ -7,8 +7,8 @@ def kriging(df,shape):
     y_val = df.iloc[:,1]
     depth = df.iloc[:,2]
     #doing the krieging
-    OK =OrdinaryKriging(x_val,y_val,depth,variogram_model='spherical',verbose=True,enable_plotting=True,
-                        coordinates_type="euclidean",nlags=6,weight=True,exact_values=True)
+    OK =OrdinaryKriging(x_val,y_val,depth,variogram_model='power',verbose=True,enable_plotting=True,
+                        coordinates_type="euclidean",nlags=8,weight=True,exact_values=True)
     #setting up the grid and executing the results over it
     ### MAKE USER INPUT VARIABLES
     gridx = np.arange(42.668798,42.670508,.000005,dtype = "float64")
