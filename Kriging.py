@@ -21,6 +21,6 @@ def kriging(df,shape):
     #have to apply this transpose for it all to work correctly, as the orgin is flipped in calculation
     z=z.T
     #making a plot of the krieging
-    #plt.imshow(z,origin='lower')
-    #plt.show()
+    plt.imshow(z,origin='lower')
+    plt.show()
     return z,ss,gridx,gridy
