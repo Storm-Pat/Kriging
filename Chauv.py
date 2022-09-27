@@ -1,6 +1,7 @@
 import pandas as pd
 import scipy as sp
 def chauv(df):
+    print("Cleaning junk values.")
     #defining boundry p value
     P = 1/(2*len(df))
     #initialzing what will be clean data_frame
@@ -13,7 +14,6 @@ def chauv(df):
     sigma = df.iloc[:,2].std()
     #z score function
     z = lambda i: abs(i - mean) / sigma
-    print(len(df_clean))
     for i in df.iloc[:,2]:
         #computing z score
         zscore = z(i)
@@ -25,9 +25,17 @@ def chauv(df):
             df_clean = df_clean[df_clean.Depth_m != i]
     print("These are the dirty values:")
     print(dirty)
-    print("Would you like to keep these values?")
-    #user input most likley through the gui
-    #flow control would be implimented here for choosing wheter or not we return the filtered values
+    while True:
+        y_n=input("Would you like to discard the dirty values[y/n]?")
+        if y_n.lower()=="yes" or y_n.lower()=="y":
+            print("Discarding dirty values.")
+            return df_clean
+        elif y_n.lower()=="no" or y_n.lower()=="n":
+            print("Keeping dirty values.")
+            return df
+        else:
+            print("Enter yes/no or y/n")
+            continue
 
 
 

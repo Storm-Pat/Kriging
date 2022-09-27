@@ -1,12 +1,12 @@
 import numpy as np
 import rasterio
 #masking function alhumduallah
-def write_file(z,gridx,gridy):
+def write_file(z,gridx,gridy,lat_min,lat_max,lon_min,lon_max):
     #making georeference
     #first defining domain and range of the projection, len x y have to be flipped respectivly for the correct resolution to hold.
     ### MAKE USER INPUT VARIABLES
-    x=np.linspace(-84.646129,-84.644108,len(gridy))
-    y=np.linspace(42.668798,42.670508,len(gridx))
+    x=np.linspace(lon_min,lon_max,len(gridy))
+    y=np.linspace(lat_min,lat_max,len(gridx))
     #making the transform using affine in rasterio
     #first setting the resolution
     res_x=(x[-1]-x[0])/len(x)

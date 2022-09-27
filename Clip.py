@@ -3,7 +3,7 @@ import fiona
 import rasterio.mask
 def clip():
     #reprojecting shape file
-    with fiona.open('/home/pabritt/Krig/cookie_cutters/I96Billwood_GrandRiverMask.shp','r') as f:
+    with fiona.open('/home/pabritt/Krig/cookie_cutters/cookiecutters.shp','r') as f:
         shapes = [feature["geometry"] for feature in f]
     #openning raster and clipping now inshallah (I copied this context manager from the rasterio wiki lol)
     #https://rasterio.readthedocs.io/en/latest/topics/masking-by-shapefile.html pretty fucking niftey
