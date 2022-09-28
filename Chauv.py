@@ -1,4 +1,3 @@
-import pandas as pd
 import scipy as sp
 def chauv(df):
     print("Cleaning junk values.")
@@ -14,7 +13,6 @@ def chauv(df):
     sigma = df.iloc[:,2].std()
     #z score function
     z = lambda i: abs(i - mean) / sigma
-    print(df_clean)
     for i in df.iloc[:,2]:
         #computing z score
         zscore = z(i)
@@ -27,7 +25,6 @@ def chauv(df):
             df_clean = df_clean.reset_index(drop=True)
     print("These are the dirty values:")
     print(dirty)
-    print(df_clean)
     while True:
         y_n=input("Would you like to discard the dirty values[y/n]?")
         if y_n.lower()=="yes" or y_n.lower()=="y":

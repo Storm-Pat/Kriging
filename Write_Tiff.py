@@ -15,7 +15,7 @@ def write_file(z,gridx,gridy,lat_min,lat_max,lon_min,lon_max):
     print("Affine Transformation of the Coordinates", transform)
     #first making a output tiff that is not cut
     with rasterio.open(
-            'z.tff',
+            'Output Tiff/z.tff',
             'w',
             driver='GTiff',
             height=z.shape[0],

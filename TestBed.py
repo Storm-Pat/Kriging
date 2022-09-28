@@ -11,13 +11,16 @@ import Switch
 
 #main function
 if __name__ == '__main__':
-    #truncating the cookie cutters, and shapefiles folder here
+    #truncating the cookie cutters, shapefiles, and outputtiff folder here
     #starting with the cookie cutters
     shutil.rmtree('cookie_cutters')
     os.mkdir('cookie_cutters')
     #same but with point shapefiles
     shutil.rmtree('Shape Files')
     os.mkdir('Shape Files')
+    #now the tiffs
+    shutil.rmtree('Output Tiff')
+    os.mkdir('Output Tiff')
     # setting file path, the user will do this later
     direct = '/home/pabritt/Krig'
     #intial values
@@ -55,7 +58,6 @@ if __name__ == '__main__':
         df = Chauv.chauv(df)
         #asking for kriging type
         krig_type = Switch.switch()
-        print(krig_type)
         #nlags checking
         while True:
             nlags=input("Please enter an Integer for the number of variogram lags")
