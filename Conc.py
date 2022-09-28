@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import glob
 def conc(direct):
-    os.chdir(direct + '/csvs')
+    os.chdir(direct + '/testing data/csv2')
     #creating a list of all the files in the csv directory
     all_files = [i for i in glob.glob('*.{}'.format('csv'))]
     #combining them

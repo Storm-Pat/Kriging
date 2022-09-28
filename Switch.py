@@ -12,14 +12,18 @@ def switch():
             break
         else:
             print("Enter a valid integer")
-    match args:
-        case 1:
-            return "linear"
-        case 2:
-            return "power"
-        case 3:
-            return "spherical"
-        case 4:
-            return "exponential"
-        case 5:
-            return "gaussian"
+    if args == 1:
+        print("Selected Linear Kriging")
+        return "linear"
+    if args == 2:
+        print("Selected Power Kriging")
+        return "power"
+    if args == 3:
+        print("Selected Spherical Kriging")
+        return "spherical"
+    if args == 4:
+        print("Selected Exponential Kriging")
+        return "exponential"
+    if args == 5:
+        print("Selected Exponential Kriging")
+        return "gaussian"

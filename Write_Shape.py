@@ -1,5 +1,4 @@
 import fiona
-import pandas as pd
 #reading in function, takes file as an argument
 def write_file(df):
 
@@ -9,8 +8,6 @@ def write_file(df):
     shape = fiona.open('Shape Files/output.shp',mode = 'w',driver = 'ESRI Shapefile',schema=schema, crs = 'WGS84')
 
     #creating points list
-    xy = []
-    rowname = ''
     for i,j in df[['Longitude','Latitude']].iterrows():
         rowDict = {'geometry': {'type': 'Point', 'coordinates': (j.Longitude,j.Latitude)}, "properties": {'Name': df.iloc[i,2]}}
         shape.write(rowDict)

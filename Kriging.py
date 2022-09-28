@@ -11,10 +11,10 @@ def kriging(df,shape,lat_min,lat_max,lon_min,lon_max,nlags,krig_type):
                         coordinates_type="euclidean",nlags=nlags,weight=True,exact_values=True)
     #setting up the grid and executing the results over it
     ### MAKE USER INPUT VARIABLES
-    gridx = np.arange(lat_min,lat_max,.000005,dtype = "float64")
+    gridx = np.arange(lat_min,lat_max,.000007,dtype = "float64")
     ###MAKE USER INPUT VARIABLES
     # right foot creep ouhh walking with that heater
-    gridy = np.arange(lon_min,lon_max,.000005,dtype = "float64")
+    gridy = np.arange(lon_min,lon_max,.000007,dtype = "float64")
     #Look around and stay low make sure they dont see ya.
     #executing interp over defined grid, with the cookie cutter shape maksking outside values
     z, ss = OK.execute('grid',gridx,gridy,mask=shape)

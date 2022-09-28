@@ -4,7 +4,6 @@ import rasterio
 def write_file(z,gridx,gridy,lat_min,lat_max,lon_min,lon_max):
     #making georeference
     #first defining domain and range of the projection, len x y have to be flipped respectivly for the correct resolution to hold.
-    ### MAKE USER INPUT VARIABLES
     x=np.linspace(lon_min,lon_max,len(gridy))
     y=np.linspace(lat_min,lat_max,len(gridx))
     #making the transform using affine in rasterio

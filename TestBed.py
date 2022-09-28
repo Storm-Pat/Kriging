@@ -55,6 +55,7 @@ if __name__ == '__main__':
         df = Chauv.chauv(df)
         #asking for kriging type
         krig_type = Switch.switch()
+        print(krig_type)
         #nlags checking
         while True:
             nlags=input("Please enter an Integer for the number of variogram lags")
@@ -64,12 +65,8 @@ if __name__ == '__main__':
             except:
                 print("Please enter an integer or number")
                 continue
-        #TODO, Have user enter path to the csv files, remeber to fix path in conc function
-        #TODO, Add a user defined domain and range, cause shape file D-R varies wildley, maybe can auto in future.
-        #TODO: FRONTEND: HAVE USER DEFINE OUTPUT FILE LOCATION AND NAME
 
         #reporojecting the shapefile
-        #TODO: FRONTEND: have user input mask shapefile
         shape = Repo.repo()
 
         #writing shape file

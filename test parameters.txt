@@ -10,3 +10,9 @@ lon_min: -84.64624
 lon_max:-84.64414
 lat_min:42.6687
 lat_max:42.67067
+
+Test #3 with new data:
+lon_min:-83.703135
+lon_max:-83.69782
+lat_min:42.27407
+lat_max:42.276646
