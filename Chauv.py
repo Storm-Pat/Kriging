@@ -1,4 +1,5 @@
 import scipy as sp
+import pandas as pd
 def chauv(df):
     print("Cleaning junk values.")
     #defining boundry p value
@@ -29,9 +30,13 @@ def chauv(df):
         y_n=input("Would you like to discard the dirty values[y/n]?")
         if y_n.lower()=="yes" or y_n.lower()=="y":
             print("Discarding dirty values.")
+            #writing out dataframe
+            df_clean.to_csv("Outputs/clean_data.csv")
             return df_clean
         elif y_n.lower()=="no" or y_n.lower()=="n":
             print("Keeping dirty values.")
+            #writing it out again
+            df.to_csv('Outputs/raw_data.csv')
             return df
         else:
             print("Enter yes/no or y/n")

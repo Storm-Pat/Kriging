@@ -16,11 +16,8 @@ if __name__ == '__main__':
     shutil.rmtree('cookie_cutters')
     os.mkdir('cookie_cutters')
     #same but with point shapefiles
-    shutil.rmtree('Shape Files')
-    os.mkdir('Shape Files')
-    #now the tiffs
-    shutil.rmtree('Output Tiff')
-    os.mkdir('Output Tiff')
+    shutil.rmtree('Outputs')
+    os.mkdir('Outputs')
     # setting file path, the user will do this later
     direct = '/home/pabritt/Krig'
     #intial values

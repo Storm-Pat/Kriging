@@ -22,9 +22,11 @@ def kriging(df,shape,lat_min,lat_max,lon_min,lon_max,nlags,krig_type):
     z=z.T
     ss=ss.T
     #making a plot of the krieging
+    plt.figure(1)
     plt.imshow(z,origin='lower')
     plt.title("Kriging Results")
-    plt.show()
+
+    plt.figure(2)
     plt.imshow(ss,origin="lower")
     plt.title("Kriging Error")
     plt.show()

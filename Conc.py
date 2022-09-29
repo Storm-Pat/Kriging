@@ -2,7 +2,7 @@ import pandas as pd
 import os
 import glob
 def conc(direct):
-    os.chdir(direct + '/testing data/csvs')
+    os.chdir(direct + '/testing data/csv2')
     #creating a list of all the files in the csv directory
     all_files = [i for i in glob.glob('*.{}'.format('csv'))]
     #combining them
@@ -11,5 +11,14 @@ def conc(direct):
     os.chdir(direct)
     #settings the depth values negitive
     df.iloc[:,2] = -1*df.iloc[:,2]
+    #filtering out objectivly wrong values (postive depth and nans)
+    #first the nans
+    df = df.dropna()
+    df = df.reset_index(drop=True)
+    #Then positive values
+    for i in df.iloc[:,2]:
+        if i > 0:
+            df = df[df.Depth_m != i]
+            df= df.reset_index(drop=True)
     return df
 
