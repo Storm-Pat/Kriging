@@ -1,18 +1,16 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pykrige.ok import OrdinaryKriging
-def kriging(df,shape,lat_min,lat_max,lon_min,lon_max,nlags,krig_type):
+def kriging(df,shape,lat_min,lat_max,lon_min,lon_max,nlags,krig_type,weights,PI,exact):
     #formatting the data
     x_val = df.iloc[:,0]
     y_val = df.iloc[:,1]
     depth = df.iloc[:,2]
     #doing the krieging
     OK =OrdinaryKriging(x_val,y_val,depth,variogram_model=krig_type,verbose=True,enable_plotting=True,
-                        coordinates_type="euclidean",nlags=nlags,weight=True,exact_values=True)
+                        coordinates_type="euclidean",nlags=nlags,weight=weights,exact_values=exact, pseudo_inv=PI)
     #setting up the grid and executing the results over it
-    ### MAKE USER INPUT VARIABLES
     gridx = np.arange(lat_min,lat_max,.000007,dtype = "float64")
-    ###MAKE USER INPUT VARIABLES
     # right foot creep ouhh walking with that heater
     gridy = np.arange(lon_min,lon_max,.000007,dtype = "float64")
     #Look around and stay low make sure they dont see ya.

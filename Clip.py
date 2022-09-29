@@ -1,6 +1,7 @@
 import rasterio
 import fiona
 import rasterio.mask
+import time
 def clip():
     #reprojecting shape file
     with fiona.open('/home/pabritt/Krig/cookie_cutters/cookie_cutters.shp','r') as f:
@@ -18,3 +19,17 @@ def clip():
     #outputting the sliced tiff
     with rasterio.open('Outputs/z_mask.tff', 'w', **out_meta) as f:
         f.write(out_image)
+    #Same as above but now clipping the erorr
+    with rasterio.open('Outputs/ss.tff') as src:
+        out_image, out_transform = rasterio.mask.mask(src, shapes, invert=False)
+        out_meta = src.meta
+        # raster output data, once again straight from the wiki
+    out_meta.update({"driver": "GTiff",
+                     "height": out_image.shape[1],
+                     "width": out_image.shape[2],
+                     "transform": out_transform})
+    # outputting the sliced tiff
+    with rasterio.open('Outputs/ss_mask.tff', 'w', **out_meta) as f:
+        f.write(out_image)
+    #a error about projections will be thrown over the fact the shapefile was converted, so this is here for readability
+    time.sleep(2)

@@ -8,6 +8,7 @@ import Clip
 import Repo
 import Chauv
 import Switch
+import CV
 
 #main function
 if __name__ == '__main__':
@@ -53,7 +54,25 @@ if __name__ == '__main__':
         df=Conc.conc(direct)
         #cleaning algorithm,returns chosen dataframe
         df = Chauv.chauv(df)
-        #asking for kriging type
+        #reporojecting the shapefile
+        shape = Repo.repo()
+        #writing shape file
+        Write_Shape.write_file(df)
+
+        ####### UGLY ASS YANDERE DEV USER INPUT BOILLERPLATE #############
+        #If only python 3.9 suported using match as a switch statement
+        #serching for best parameters to try
+        while True:
+            i = input("Would you like to use ML to get the best parameters[y/n] (Note: this takes a while)")
+            if i.lower() == "yes" or i.lower() == "y":
+                #calling our wonderfull ML function
+                CV.cv(df)
+                break
+            elif i.lower() == "no" or i.lower() == "n":
+                break
+            else:
+                print("Enter a valid input")
+        #prompting user to run kriging type
         krig_type = Switch.switch()
         #nlags checking
         while True:
@@ -64,19 +83,46 @@ if __name__ == '__main__':
             except:
                 print("Please enter an integer or number")
                 continue
-
-        #reporojecting the shapefile
-        shape = Repo.repo()
-
-        #writing shape file
-        Write_Shape.write_file(df)
+        #allow to user to enable or disable wheights
+        while True:
+            weights=input("Would you like to apply weights[y/n]")
+            if weights.lower() == "yes" or weights.lower() == "y":
+                weights = True
+                break
+            elif weights.lower() == "no" or weights.lower() == "n":
+                weights = False
+                break
+            else:
+                print("Enter yes/no or y/n")
+        #prompting user if they want to use a pseduo inverse matrix
+        while True:
+            PI = input("Would you like to use a pseudo inverse matrix[y/n]")
+            if PI.lower() == "yes" or PI.lower() == "y":
+                PI = True
+                break
+            elif PI.lower() == "no" or PI.lower() == "n":
+                PI = False
+                break
+            else:
+                print("Please enter yes/no or y/n")
+        #prompting the user to select the wheter to use exact values or not
+        while True:
+            exact = input("Would you like to use exact values[y/n]")
+            if exact.lower() == "yes" or exact.lower() == "y":
+                exact = True
+                break
+            elif exact.lower() == "no" or exact.lower() == "n":
+                exact = False
+                break
+            else:
+                print("Please enter yes/no or y/n")
 
         #### START OF KRIGING ####
         #we pass shape to mask the interpolation
-        z,ss,gridx,gridy = Kriging.kriging(df,shape,lat_min,lat_max,lon_min,lon_max,nlags,krig_type)
+        z,ss,gridx,gridy = Kriging.kriging(df,shape,lat_min,lat_max,lon_min,lon_max,nlags,krig_type,weights,PI,exact)
 
         #writting the tiff function, the grid is passed to define resolution, data frame defines domain and range,z for values
-        Write_Tiff.write_file(z,gridx,gridy,lat_min,lat_max,lon_min,lon_max)
+        Write_Tiff.write_file(z,ss,gridx,gridy,lat_min,lat_max,lon_min,lon_max)
 
         #clipping the tif here, using the cookie cutter and outputted tiff under write tiff function.
         Clip.clip()

@@ -1,7 +1,7 @@
 import numpy as np
 import rasterio
 #masking function alhumduallah
-def write_file(z,gridx,gridy,lat_min,lat_max,lon_min,lon_max):
+def write_file(z,ss,gridx,gridy,lat_min,lat_max,lon_min,lon_max):
     #making georeference
     #first defining domain and range of the projection, len x y have to be flipped respectivly for the correct resolution to hold.
     x=np.linspace(lon_min,lon_max,len(gridy))
@@ -26,6 +26,19 @@ def write_file(z,gridx,gridy,lat_min,lat_max,lon_min,lon_max):
             crs='+proj=latlong',
     ) as dst:
         dst.write(z, 1)
+    #writing error tiff that is not cut
+    with rasterio.open(
+            'Outputs/ss.tff',
+            'w',
+            driver='GTiff',
+            height=ss.shape[0],
+            width=ss.shape[1],
+            count=1,
+            dtype=ss.dtype,
+            transform=transform,
+            crs='+proj=latlong',
+    ) as dst:
+        dst.write(ss, 1)
 
 
 
