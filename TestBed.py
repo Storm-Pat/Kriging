@@ -20,9 +20,6 @@ if __name__ == '__main__':
     shutil.rmtree('Outputs')
     os.mkdir('Outputs')
     # setting file path, the user will do this later
-    direct = '/home/pabritt/Krig'
-    #intial values
-
     while True:
         lon_min=input('Please enter your minimum longitude')
         lon_max=input('Please enter your maximum longitude')
@@ -51,7 +48,7 @@ if __name__ == '__main__':
     #really the main while loop where the magic happens after intializing everything
     while True:
         #concatinating and labeling the data
-        df=Conc.conc(direct)
+        df=Conc.conc()
         #cleaning algorithm,returns chosen dataframe
         df = Chauv.chauv(df)
         #reporojecting the shapefile

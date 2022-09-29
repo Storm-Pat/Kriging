@@ -21,7 +21,7 @@ def cv(df):
     #grid searcher
     print("Finding best hyperparameters out of 4368 combinations!")
     estimator.fit(X=X,y=y)
-    #printing best params
+    #printing best params (copied this from the wiki, like straight up lol)
     if hasattr(estimator, "best_score_"):
         print("best_score R² = {:.3f}".format(estimator.best_score_))
         print("best_params = ", estimator.best_params_)
