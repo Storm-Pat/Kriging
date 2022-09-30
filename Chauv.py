@@ -1,5 +1,4 @@
 import scipy as sp
-import pandas as pd
 def chauv(df):
     print("Cleaning junk values.")
     #defining boundry p value
