@@ -1,13 +1,13 @@
 import tkinter as tk
 from tkinter import *
-import os
 
 # TODO create directory for import files to go
 # TODO create checks for the lat long to ensure the entered values are, in fact, values and not a bunch of letters
 # TODO create another GUI that this GUI points to after interpolation displaying all available data
 # TODO create a stop point that points to graphed data
+
 gui = Tk(className='GENEX script-main input')
-gui.geometry("340x520")
+gui.geometry("340x600")
 
 
 def maingui():
@@ -126,7 +126,7 @@ def maingui():
 
     rangechoice.pack()
     buttonchoice.pack()
-    # choosing whether or not to use specific lat and long values
+    # choosing whether to use specific lat and long values
 
     longmin.pack()
     longmin_txt.pack()
@@ -142,22 +142,31 @@ def maingui():
     space2 = tk.Label(text="______________________________________________________________________________")
     space2.pack()
 
-    # makes a line to seperate the GUI (just for visuals)
+    # makes a line to separate the GUI (just for visuals)
+
+    lags_txt = tk.Label(text="Enter the number of lags for the Variogram:")
+    lags_ent = tk.Entry(
+        fg='black',
+        width=10
+    )
+    lags_txt.pack()
+    lags_ent.pack()
 
     # Nlags
+
     def changetxt():
         if on_off_exval['text'] == 'Exact value = OFF':
             on_off_exval['text'] = 'Exact value = ON'
             while on_off_exval['text'] == 'Exact value = ON':
                 EXV = 'True'
-                return EXV == 1
-            # sends out a boolean value for true
+                return EXV == True
+            # sends out a value for true (boolean?)
         else:
             on_off_exval['text'] = 'Exact value = OFF'
             while on_off_exval['text'] == 'Exact value = OFF':
                 EXV = 'False'
-                return EXV == 0
-            # senmds out a boolean value for false
+                return EXV == False
+            # sends out a value for false (boolean?)
         # changes the text in the exact value box depending on whether it was clicked or not.
 
     on_off_exval = tk.Button(
@@ -175,13 +184,13 @@ def maingui():
         if weights['text'] == 'Weights = OFF':
             weights['text'] = 'Weights = ON'
             while weights['text'] == 'Weights = ON':
-                WHEY = 'True'
-                return WHEY == 1
+                WHEY = 1
+                return WHEY == True
         else:
             weights['text'] = 'Weights = OFF'
             while weights['text'] == 'Weights = OFF':
-                WHEY = 'False'
-                return WHEY == 0
+                WHEY = 0
+                return WHEY == False
             # changes the text in the exact value box depending on whether it was clicked or not.
 
     weights = tk.Button(
@@ -196,31 +205,22 @@ def maingui():
 
     def type1():
         if options == "Linear":
-            dropdown = 1
+            dropdown = 'linear'
             return dropdown
         elif options == "Power":
-            dropdown = 2
+            dropdown = 'power'
             return dropdown
         elif options == "Spherical":
-            dropdown = 3
+            dropdown = 'spherical'
             return dropdown
         elif options == "Exponential":
-            dropdown = 4
+            dropdown = 'exponential'
             return dropdown
         elif options == "Gaussian":
-            dropdown = 5
+            dropdown = 'gaussian'
             return dropdown
         else:
             return
-
-    def show():
-        label.config(text=clicked.get())
-        dropdown = tk.StringVar()
-        DRPMNU = dropdown.get()
-        dropdown.set = str
-        return DRPMNU
-
-    # returns an integer value for dropdown menu
 
     options = ["Linear", "Power", "Spherical", "Exponential", "Gaussian"]
     clicked = StringVar()
@@ -228,11 +228,34 @@ def maingui():
     drop = OptionMenu(gui, clicked, *options)
     clicked.get()
     command = type1
-    drop.pack()
+    drop.pack(pady=5)
+
     # dropdown menu
 
-    label = Label(gui, text=" ")
-    label.pack()
+    def skynet():
+        if mlbutton['text'] == 'Machine Learning = OFF':
+            mlbutton['text'] = 'Machine Learning = ON'
+        else:
+            mlbutton['text'] = 'Machine Learning = OFF'
+        if mlbutton['text'] == 'Machine Learning = ON':
+            ML = 1
+            return ML == True
+        elif mlbutton['text'] == 'Machine Learning = OFF':
+            ML = 0
+            return ML == False
+        else:
+            return
+
+    mlbutton = tk.Button(
+        text="Machine Learning = OFF",
+        bg="white",
+        fg='black',
+        activebackground='purple',
+        width=19,
+        command=skynet
+    )
+
+    mlbutton.pack(pady=5)
 
     runbutton = tk.Button(
         text="Run",
@@ -241,7 +264,7 @@ def maingui():
         activebackground="Green",
         width=10
     )
-    runbutton.pack()
+    runbutton.pack(pady=3)
     # just creates a button to click when the program is ready to run
 
     # return CSV, SHP, LONG_MIN, LONG_MAX, LAT_MIN, LAT_MAX
