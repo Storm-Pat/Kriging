@@ -20,32 +20,6 @@ if __name__ == '__main__':
     #same but with point shapefiles
     shutil.rmtree('Outputs')
     os.mkdir('Outputs')
-    # setting file path, the user will do this later
-    while True:
-        lon_min=input('Please enter your minimum longitude')
-        lon_max=input('Please enter your maximum longitude')
-        lat_min=input('Please enter your minimum latitude')
-        lat_max=input('Please enter your maximum latitude')
-        #exception checking the inputs
-        try:
-            # casting the points to floats to allow computation
-            lon_min=float(lon_min)
-            lon_max=float(lon_max)
-            lat_min=float(lat_min)
-            lat_max=float(lat_max)
-        except:
-            print("Please enter a valid number")
-            continue
-
-        #checking to see if the inputed values are valid domain and ranges
-        if lat_min >= lat_max:
-            print("Invalid range, minimum lattidude is greater than or equal to maximum latitude")
-            continue
-        if lon_min >= lon_max:
-            print("Invalid domain, minimum longitude greater than or equal to maximum longitude")
-            continue
-        break
-
     #really the main while loop where the magic happens after intializing everything
     while True:
         #concatinating and labeling the data
@@ -53,10 +27,41 @@ if __name__ == '__main__':
         #cleaning algorithm,returns chosen dataframe
         df = Chauv.chauv(df)
         #reporojecting the shapefile
-        shape = Repo.repo()
+        shape,lat_max,lat_min,lon_max,lon_min = Repo.repo()
         #writing shape file
         Write_Shape.write_file(df)
+        while True:
+            ans = input("Would you like to set a custom domain and range[y/n]?")
+            if ans.lower() == "yes" or ans.lower() == "y":
+                while True:
+                    lon_min = input('Please enter your minimum longitude')
+                    lon_max = input('Please enter your maximum longitude')
+                    lat_min = input('Please enter your minimum latitude')
+                    lat_max = input('Please enter your maximum latitude')
+                    # exception checking the inputs
+                    try:
+                        # casting the points to floats to allow computation
+                        lon_min = float(lon_min)
+                        lon_max = float(lon_max)
+                        lat_min = float(lat_min)
+                        lat_max = float(lat_max)
+                    except:
+                        print("Please enter a valid number")
+                        continue
 
+                    # checking to see if the inputed values are valid domain and ranges
+                    if lat_min >= lat_max:
+                        print("Invalid range, minimum lattidude is greater than or equal to maximum latitude")
+                        continue
+                    if lon_min >= lon_max:
+                        print("Invalid domain, minimum longitude greater than or equal to maximum longitude")
+                        continue
+                    break
+                break
+            elif ans.lower() == "no" or ans.lower() == "n":
+                break
+            else:
+                print("Enter a yes/no or y/n")
         ####### UGLY ASS YANDERE DEV USER INPUT BOILLERPLATE #############
         #If only python 3.9 suported using match as a switch statement
         #serching for best parameters to try
@@ -137,42 +142,6 @@ if __name__ == '__main__':
                 break
             else:
                 print("Enter y/n or yes/no.")
-
-        #flow controll for reseting or keeping domain and range
-        while True:
-            t_f= input("Would you like to keep the same domain and range[y/n]")
-            if t_f.lower() == "yes" or t_f.lower() == "y":
-                print("Keeping the same domain and range")
-                break
-            elif t_f.lower()=="no" or t_f.lower()=="n":
-                while True:
-                    lon_min = input('Please enter your minimum longitude')
-                    lon_max = input('Please enter your maximum longitude')
-                    lat_min = input('Please enter your minimum latitude')
-                    lat_max = input('Please enter your maximum latitude')
-                    # exception checking the inputs
-                    try:
-                        # casting the points to floats to allow computation
-                        lon_min = float(lon_min)
-                        lon_max = float(lon_max)
-                        lat_min = float(lat_min)
-                        lat_max = float(lat_max)
-                    except:
-                        print("Please enter a valid number")
-                        continue
-
-                    # checking to see if the inputed values are valid domain and ranges
-                    if lat_min >= lat_max:
-                        print("Invalid range, minimum lattidude is greater than or equal to maximum latitude")
-                        continue
-                    if lon_min >= lon_max:
-                        print("Invalid domain, minimum longitude greater than or equal to maximum longitude")
-                        continue
-                    break
-                break
-            else:
-                print("Please enter yes/no or y/n")
-                continue
 
 
 

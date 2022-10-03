@@ -19,4 +19,10 @@ def repo():
     #reading it back out to a file under the cookie cutters, seperate from the og shapefiles
     shit.to_file(driver='ESRI Shapefile',filename=f"/home/pabritt/Krig/cookie_cutters")
     #Shit becomes shape again in main lol
-    return shit
+    #grabbing the min and maxes
+    extrema=shit.bounds
+    lon_min=float(extrema['minx'])
+    lon_max=float(extrema['maxx'])
+    lat_min=float(extrema['miny'])
+    lat_max=float(extrema['maxy'])
+    return shit,lat_max,lat_min,lon_max,lon_min
