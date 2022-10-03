@@ -1,11 +1,11 @@
 import tkinter as tk
 from tkinter import *
-import os
 
 # TODO create directory for import files to go
 # TODO create checks for the lat long to ensure the entered values are, in fact, values and not a bunch of letters
 # TODO create another GUI that this GUI points to after interpolation displaying all available data
 # TODO create a stop point that points to graphed data
+
 gui = Tk(className='GENEX script-main input')
 gui.geometry("340x600")
 
@@ -142,9 +142,18 @@ def maingui():
     space2 = tk.Label(text="______________________________________________________________________________")
     space2.pack()
 
-    # makes a line to seperate the GUI (just for visuals)
+    # makes a line to separate the GUI (just for visuals)
+
+    lags_txt = tk.Label(text="Enter the number of lags for the Variogram:")
+    lags_ent = tk.Entry(
+        fg='black',
+        width=10
+    )
+    lags_txt.pack()
+    lags_ent.pack()
 
     # Nlags
+
     def changetxt():
         if on_off_exval['text'] == 'Exact value = OFF':
             on_off_exval['text'] = 'Exact value = ON'
@@ -175,13 +184,13 @@ def maingui():
         if weights['text'] == 'Weights = OFF':
             weights['text'] = 'Weights = ON'
             while weights['text'] == 'Weights = ON':
-                WHEY = 'True'
-                return WHEY == 1
+                WHEY = 1
+                return WHEY == True
         else:
             weights['text'] = 'Weights = OFF'
             while weights['text'] == 'Weights = OFF':
-                WHEY = 'False'
-                return WHEY == 0
+                WHEY = 0
+                return WHEY == False
             # changes the text in the exact value box depending on whether it was clicked or not.
 
     weights = tk.Button(
@@ -226,13 +235,16 @@ def maingui():
     def skynet():
         if mlbutton['text'] == 'Machine Learning = OFF':
             mlbutton['text'] = 'Machine Learning = ON'
-            while mlbutton['text'] == 'Machine Learning = ON':
-                genesys = 1
-                return genesys == True
         else:
             mlbutton['text'] = 'Machine Learning = OFF'
-            genesys = 0
-            return genesys == False
+        if mlbutton['text'] == 'Machine Learning = ON':
+            ML = 1
+            return ML == True
+        elif mlbutton['text'] == 'Machine Learning = OFF':
+            ML = 0
+            return ML == False
+        else:
+            return
 
     mlbutton = tk.Button(
         text="Machine Learning = OFF",
