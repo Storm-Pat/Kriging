@@ -17,7 +17,7 @@ def repo():
     #changing coords, idk why I named this shit, kinda funny actually, anyway this changes the projection too
     shit = shape.to_crs(epsg=4326)
     #reading it back out to a file under the cookie cutters, seperate from the og shapefiles
-    shit.to_file(driver='ESRI Shapefile',filename=f"/home/pabritt/Krig/cookie_cutters")
+    shit.to_file(driver='ESRI Shapefile',filename=f"cookie_cutters")
     #Shit becomes shape again in main lol
     #grabbing the min and maxes
     extrema=shit.bounds
