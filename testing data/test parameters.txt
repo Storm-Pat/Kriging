@@ -17,4 +17,8 @@ lon_max:-83.69782
 lat_min:42.27407
 lat_max:42.276646
 
-
+Test #4 for a small dataset to be concat:
+lon_min: -84.6459
+lon_max: -84.6453
+lat_min:42.6695
+lat_max: 42.6699

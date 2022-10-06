@@ -1,6 +1,10 @@
 #!./usr/bin/env python
+#I refuse to use oop for this project
 import os
 import shutil
+
+import pandas as pd
+
 import Kriging
 import Write_Shape
 import Conc
@@ -10,6 +14,7 @@ import Repo
 import Chauv
 import Switch
 import CV
+
 
 #main function
 if __name__ == '__main__':
