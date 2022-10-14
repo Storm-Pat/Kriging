@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
+import os
+from django.core.exceptions import ValidationError
 
 
 # TODO create directory for import files to go
@@ -40,9 +42,14 @@ gui.geometry("340x640")
 
 def maingui():
 
+    def valfiles(value):
+        ext = os.path.splitext(value.name)[1]
+        validext = ['.csv', '.shp']
+        if not ext.lower() in validext:
+            raise ValidationError('Unsupported file type!')
+
     def csvfile():
         csv_path = filedialog.askopenfile()
-        print(csv_path)
         entry_one.insert(
             0,
             csv_path
@@ -58,9 +65,11 @@ def maingui():
         width=40
     )
     csvbutton = tk.Button(
-        width=6,
+        text="Open File",
+        width=7,
         command=csvfile
     )
+
     # put csvs here
 
     def shpfile():
@@ -80,7 +89,8 @@ def maingui():
         width=40
     )
     shpbutton = tk.Button(
-        width=6,
+        text="Open File",
+        width=7,
         command=shpfile
     )
     # put og shapes
@@ -250,20 +260,20 @@ def maingui():
 
     def type1():
         if options == "Linear":
-            dropdown = "linear"
-            return dropdown == "linear"
+            dropdown1 = "linear"
+            return dropdown1 == "linear"
         elif options == "Power":
-            dropdown = "power"
-            return dropdown == "power"
+            dropdown1 = "power"
+            return dropdown1 == "power"
         elif options == "Spherical":
-            dropdown = "spherical"
-            return dropdown == "spherical"
+            dropdown1 = "spherical"
+            return dropdown1 == "spherical"
         elif options == "Exponential":
-            dropdown = "exponential"
-            return dropdown == "exponential"
+            dropdown1 = "exponential"
+            return dropdown1 == "exponential"
         elif options == "Gaussian":
-            dropdown = "gaussian"
-            return dropdown == "gaussian"
+            dropdown1 = "gaussian"
+            return dropdown1 == "gaussian"
         else:
             return
 
