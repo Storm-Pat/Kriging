@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
-import os
-from django.core.exceptions import ValidationError
 
 
 # TODO create directory for import files to go
@@ -41,18 +39,15 @@ gui.geometry("340x640")
 
 
 def maingui():
-
-    def valfiles(value):
-        ext = os.path.splitext(value.name)[1]
-        validext = ['.csv', '.shp']
-        if not ext.lower() in validext:
-            raise ValidationError('Unsupported file type!')
-
     def csvfile():
+        entry_one.delete(0, END)
         csv_path = filedialog.askopenfile()
+        csv_copy = csv_path
+        csv_copy = csv_copy.__str__()
+        csv_copy2 = csv_copy.replace("<_io.TextIOWrapper name=", '').replace("mode='r' encoding='cp1252'>", '')
         entry_one.insert(
             0,
-            csv_path
+            csv_copy2
         )
 
     CSV = tk.StringVar()
@@ -73,10 +68,14 @@ def maingui():
     # put csvs here
 
     def shpfile():
+        entry_two.delete(0, END)
         shp_path = filedialog.askopenfile()
+        shp_copy = shp_path
+        shp_copy = shp_copy.__str__()
+        shp_copy2 = shp_copy.replace("<_io.TextIOWrapper name=", '').replace("mode='r' encoding='cp1252'>", '')
         entry_two.insert(
             0,
-            shp_path
+            shp_copy2
         )
 
     SHP = tk.StringVar()
