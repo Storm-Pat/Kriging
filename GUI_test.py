@@ -44,11 +44,19 @@ def maingui():
         csv_path = filedialog.askopenfile()
         csv_copy = csv_path
         csv_copy = csv_copy.__str__()
-        csv_copy2 = csv_copy.replace("<_io.TextIOWrapper name=", '').replace("mode='r' encoding='cp1252'>", '')
-        entry_one.insert(
-            0,
-            csv_copy2
-        )
+        notcsv = "File must be a '.csv' file!"
+        csv_copy2 = csv_copy.replace("<_io.TextIOWrapper name='", '').replace("' mode='r' encoding='cp1252'>", '')
+        if '.csv' in csv_copy2:
+            entry_one.insert(
+                0,
+                csv_copy2
+            )
+        else:
+            entry_one.insert(
+                0,
+                notcsv
+            )
+
 
     CSV = tk.StringVar()
     inpone = tk.Label(text="Input .csv file(s) or folder.")
@@ -72,7 +80,7 @@ def maingui():
         shp_path = filedialog.askopenfile()
         shp_copy = shp_path
         shp_copy = shp_copy.__str__()
-        shp_copy2 = shp_copy.replace("<_io.TextIOWrapper name=", '').replace("mode='r' encoding='cp1252'>", '')
+        shp_copy2 = shp_copy.replace("<_io.TextIOWrapper name='", '').replace("' mode='r' encoding='cp1252'>", '')
         entry_two.insert(
             0,
             shp_copy2
