@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import *
+# import GUI_test
+
 # from tkinter import filedialog
 
 # will need to use filedialog since the GUI would be pulling the output file location for the user
@@ -23,11 +25,12 @@ def guistuff():
         text="QUIT",
         bg="red",
         fg="white",
-        width=10
-        # TODO will need to force close the program
+        width=10,
+        command=outgui.quit
     )
+
     runagain = tk.Button(
-        text="RUN AGAIN",
+        text="RUN AGAIN?",
         bg="green",
         fg="white",
         width=10
