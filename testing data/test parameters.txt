@@ -22,3 +22,15 @@ lon_min: -84.6459
 lon_max: -84.6453
 lat_min:42.6695
 lat_max: 42.6699
+
+Test 5 for up:
+lon_min:-88.545915
+lon_max:-88.544970
+lat_min:47.120264
+lat_max:47.120519
+
+Test 6 for NY:
+lon_min:-74.27866
+lon_max:-74.27813
+lat_min:42.92932
+lat_max:42.933104

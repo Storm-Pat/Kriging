@@ -8,7 +8,7 @@ def clip():
         shapes = [feature["geometry"] for feature in f]
     #openning raster and clipping now inshallah (I copied this context manager from the rasterio wiki lol)
     #https://rasterio.readthedocs.io/en/latest/topics/masking-by-shapefile.html pretty fucking niftey
-    with rasterio.open('Outputs/z.tff') as src:
+    with rasterio.open('Outputs/z.tif') as src:
         out_image,out_transform= rasterio.mask.mask(src,shapes,invert=False)
         out_meta = src.meta
         #raster output data, once again straight from the wiki
@@ -17,10 +17,10 @@ def clip():
                      "width": out_image.shape[2],
                      "transform": out_transform})
     #outputting the sliced tiff
-    with rasterio.open('Outputs/z_mask.tff', 'w', **out_meta) as f:
+    with rasterio.open('Outputs/z_mask.tif', 'w', **out_meta) as f:
         f.write(out_image)
     #Same as above but now clipping the erorr
-    with rasterio.open('Outputs/ss.tff') as src:
+    with rasterio.open('Outputs/ss.tif') as src:
         out_image, out_transform = rasterio.mask.mask(src, shapes, invert=False)
         out_meta = src.meta
         # raster output data, once again straight from the wiki
@@ -29,7 +29,7 @@ def clip():
                      "width": out_image.shape[2],
                      "transform": out_transform})
     # outputting the sliced tiff
-    with rasterio.open('Outputs/ss_mask.tff', 'w', **out_meta) as f:
+    with rasterio.open('Outputs/ss_mask.tif', 'w', **out_meta) as f:
         f.write(out_image)
     #a error about projections will be thrown over the fact the shapefile was converted, so this is here for readability
     time.sleep(2)

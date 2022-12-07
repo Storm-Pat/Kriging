@@ -1,4 +1,3 @@
-import pyproj as proj
 import os
 import glob
 import pandas as pd
@@ -14,15 +13,6 @@ def tolatlon():
     os.chdir(oldpwd)
     #settings the depth values negitive
     df.iloc[:,2] = -1*df.iloc[:,2]
-    #filtering out objectivly wrong values (postive depth and nans)
-    #first the nans
-    df = df.dropna()
-    df = df.reset_index(drop=True)
-    #creating proj option
-    myProj = proj.Proj(proj='utm',zone=16,ellps='WGS84')
-    lon,lat=myProj(df['X'].values,df['Y'].values,inverse=True)
-    df.iloc[:,0]=lon
-    df.iloc[:,1]=lat
-    df = df.rename(columns={'X':'Longitude','Y':'Latitude','Z': 'Depth_m'})
-    print(df.memory_usage())
+    print(df)
+    df = df.rename(columns={'Corrected Depth (Hi)': 'Depth_m'})
     return df

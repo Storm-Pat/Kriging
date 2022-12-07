@@ -2,9 +2,7 @@
 #I refuse to use oop for this project
 import os
 import shutil
-
 import pandas as pd
-
 import Kriging
 import Write_Shape
 import Conc
@@ -14,8 +12,8 @@ import Repo
 import Chauv
 import Switch
 import CV
-
-
+import proj
+import numpy as np
 #main function
 if __name__ == '__main__':
     #truncating the cookie cutters, shapefiles, and outputtiff folder here
@@ -28,7 +26,24 @@ if __name__ == '__main__':
     #really the main while loop where the magic happens after intializing everything
     while True:
         #concatinating and labeling the data
-        df=Conc.conc()
+        df = proj.tolatlon()
+        #for the large datasets that need to be interpolated
+        if len(df) > 20000:
+            zi, yi, xi = np.histogram2d(df.iloc[:, 1], df.iloc[:, 0], bins=(150, 150), weights=df.iloc[:, 2],
+                                        normed=False)
+            counts, _, _ = np.histogram2d(df.iloc[:, 1], df.iloc[:, 0], bins=(150, 150))
+            zi = zi / counts
+            # correcting for the diffrence in zi and the axis
+            xi = np.linspace(xi.min(), xi.max(), len(zi), zi.shape[0],dtype="float64")
+            yi = np.linspace(yi.min(), yi.max(), len(zi), zi.shape[1],dtype="float64")
+            zi = np.ma.masked_invalid(zi)
+            xx, yy = np.meshgrid(xi, yi)
+            # get valid vals
+            x1 = xx[~zi.mask]
+            y1 = yy[~zi.mask]
+            z1 = zi[~zi.mask] * -1
+            df = pd.DataFrame({'Longitude': y1, 'Latitude':x1, 'Depth_m':z1}).astype("float64")
+            print("New df", df)
         #cleaning algorithm,returns chosen dataframe
         df = Chauv.chauv(df)
         #reporojecting the shapefile

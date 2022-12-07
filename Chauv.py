@@ -21,7 +21,7 @@ def chauv(df):
         #cheking the probablity function output against the boundry
         if p < P:
             dirty.append(i)
-            df_clean = df_clean[df_clean.Depth_m != i]
+            df_clean = df_clean[df_clean.Depth_m!= i]
             df_clean = df_clean.reset_index(drop=True)
     print("These are the dirty values:")
     print(dirty)

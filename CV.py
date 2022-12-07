@@ -8,7 +8,6 @@ def cv(df):
         #"method": ["ordinary"],
         "variogram_model": ["linear", "power", "gaussian", "spherical","exponential"],
         "nlags": [6,8,10,15,20],
-        "weight": [True, False],
         "pseudo_inv": [True,False],
         "exact_values": [True,False]
     }
