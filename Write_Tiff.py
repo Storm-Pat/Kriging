@@ -12,7 +12,7 @@ def write_file(z,ss,gridx,gridy,lat_min,lat_max,lon_min,lon_max):
     res_y=(y[-1]-y[0])/len(y)
     #Then doing the transform on this, also will print transformation matrix for refference
     transform = rasterio.Affine.translation(x[0]-res_x/2,y[0]-res_y/2)*rasterio.Affine.scale(res_x,res_y)
-    print("Affine Transformation of the Coordinates", transform)
+    print("Affine Transformation of the Coordinates \n", transform)
     #first making a output tiff that is not cut
     with rasterio.open(
             'Outputs/z.tif',

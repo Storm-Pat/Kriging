@@ -8,7 +8,6 @@ def cv(df):
         #"method": ["ordinary"],
         "variogram_model": ["linear", "power", "gaussian", "spherical","exponential"],
         "nlags": [6,8,10,15,20],
-        "pseudo_inv": [True,False],
         "exact_values": [True,False]
     }
     #the estimator object to be used to predict the best kriging
@@ -18,7 +17,7 @@ def cv(df):
     X=df_np[:,0:2]
     y=df_np[:,2]
     #grid searcher
-    print("Finding best hyperparameters out of 4368 combinations!")
+    print("Finding best hyperparameters out of 220 combinations!")
     estimator.fit(X=X,y=y)
     #printing best params (copied this from the wiki, like straight up lol)
     if hasattr(estimator, "best_score_"):

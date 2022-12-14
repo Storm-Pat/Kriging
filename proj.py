@@ -13,6 +13,6 @@ def tolatlon():
     os.chdir(oldpwd)
     #settings the depth values negitive
     df.iloc[:,2] = -1*df.iloc[:,2]
-    print(df)
-    df = df.rename(columns={'Corrected Depth (Hi)': 'Depth_m'})
+    #removing positive values
+    df = df[df.iloc[:,2] >= 0]
     return df
