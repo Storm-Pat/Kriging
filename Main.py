@@ -6,7 +6,6 @@ import pandas as pd
 # import Kriging
 import Write_Shape
 # import Write_Tiff
-# import Clip
 import Repo
 import Chauv
 # import Switch
@@ -17,15 +16,16 @@ import numpy as np
 
 # main function
 if __name__ == '__main__':
-    CSV, SHP, LONG_MIN, LONG_MAX, LAT_MIN, LAT_MAX, dropdown, ML, EXV, WHEY, lags_true = GUI_test.maingui()
     # TODO implement all GUI (link it to back end code)
     # truncating the cookie cutters, shapefiles, and outputtiff folder here
     # starting with the cookie cutters
-    shutil.rmtree('cookie_cutters')
-    os.mkdir('cookie_cutters')
+    shutil.rmtree('../cookie_cutters')
+    os.mkdir('../cookie_cutters')
     # same but with point shapefiles
-    shutil.rmtree('Kriging/Outputs')
-    os.mkdir('Kriging/Outputs')
+    shutil.rmtree('Outputs')
+    os.mkdir('Outputs')
+    # call the GUI
+    CSV, SHP, dropdown, ML, EXV, WHEY, lags_true = GUI_test.maingui()
     # really the main while loop where the magic happens after initializing everything
     while True:
         # concatenating and labeling the data
@@ -46,7 +46,6 @@ if __name__ == '__main__':
             y1 = yy[~zi.mask]
             z1 = zi[~zi.mask] * -1
             df = pd.DataFrame({'Longitude': y1, 'Latitude': x1, 'Depth_m': z1}).astype("float64")
-            print("CSV size too large, new DF: \n", df)
         # cleaning algorithm,returns chosen dataframe
         df = Chauv.chauv(df)
         # re-projecting the shapefile
@@ -57,14 +56,15 @@ if __name__ == '__main__':
         # If only python 3.9 supported using match as a switch statement
         # searching for best parameters to try
         while True:
-            if ML == True:
+            if ML:
                 # calling our wonderful ML function
                 CV.cv(df)
                 break
-            elif ML == False:
+            elif not ML:
                 break
+                # ML is a boolean value from the GUI
             else:
-                print("Enter a valid input")
+                ML = False
         # prompting user to run kriging type
         krig_type = dropdown
         # nlags checking
@@ -82,10 +82,12 @@ if __name__ == '__main__':
                 intlag = 20
             else:
                 intlag = 20
+                # if the value is somehow undetermined, intlag (number of lags) will automatically be set at 20
             nlags = intlag
             try:
                 nlags = intlag
                 break
+                # since the GUI returns a string, setting a new variable to a value will avoid a string to int cast
             except:
                 continue
         # prompting the user to select the whether to use exact values or not
@@ -102,9 +104,6 @@ if __name__ == '__main__':
 
         # clipping the tif here, using the cookie cutter and outputted tiff under write tiff function.
         Clip.clip()
-
-        # printing that the process has completed
-        print(f"Point shapefile outputted, {krig_type} kriging with {nlags} lags completed.")
 
         # prompting user to leave the program/or re-run
         while True:
