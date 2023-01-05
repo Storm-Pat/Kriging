@@ -2,6 +2,7 @@ from sklearn.model_selection import GridSearchCV
 import numpy as np
 from pykrige.rk import Krige
 
+
 def cv(df):
     #the kriging parameters to predict
     param_dict = {
@@ -17,9 +18,9 @@ def cv(df):
     X=df_np[:,0:2]
     y=df_np[:,2]
     #grid searcher
-    print("Finding best hyperparameters out of 220 combinations!")
     estimator.fit(X=X,y=y)
     #printing best params (copied this from the wiki, like straight up lol)
     if hasattr(estimator, "best_score_"):
         print("best_score R² = {:.3f}".format(estimator.best_score_))
         print("best_params = ", estimator.best_params_)
+        # TODO need to find a way to have this modify the GUI to show the best fit params

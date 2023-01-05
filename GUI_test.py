@@ -4,33 +4,25 @@ from tkinter import filedialog
 
 
 # TODO create directory for import files to go
-# TODO create checks for the lat long to ensure the entered values are, in fact, values and not a bunch of letters
-# TODO create another GUI that this GUI points to after interpolation displaying all available data
-# TODO create a stop point that points to graphed data
 
-def guidrop(CSV, SHP, LONG_MIN, LONG_MAX, LAT_MIN, LAT_MAX, dropdown, ML, EXV, lags_true):
+def guidrop(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     print(CSV)
     print(SHP)
-    # the if statements are "proof of concept"
-    if LONG_MIN != 0.0:
-        print(LONG_MIN)
-    if LONG_MAX != 0.0:
-        print(LONG_MAX)
-    if LAT_MIN != 0.0:
-        print(LAT_MIN)
-    if LAT_MAX != 0.0:
-        print(LAT_MAX)
-        # the GUI will return "0.0" for LAT/LONG values if the user chooses to use the values in their data,
-        # this will stop the program from setting the value of LAT/LONG to 0.0 and generating an incorrect krige.
-    print(ML)
-    print(lags_true)
-    print(EXV)
-    print(dropdown)
+    print("machines", ML)
+    print("number of lags", lags_true)
+    print("this is dirt", dirtval)
+    print("exact value", EXV)
+    print("krig type", dropdown)
     # This is in the exact format of how the GUI entries are set up, with CSV input being first and ML being the last
     # input
 
     # this will be implemented into the main kriging function eventually, passes the values received by the GUI to
     # back-end function.
+
+def machinelearning(CSV, ML):
+    print(CSV)
+    print(ML)
+
 
 
 gui = Tk(className="-GENEX GUI tool-")
@@ -130,6 +122,27 @@ def maingui():
         text="This will take several minutes to run.",
         fg="red"
     )
+
+    def termbuttondecide():
+        a = CSV.get() # string variable
+        b = ML.get() # boolean variable
+        # TODO should find a way to make a boolean variable for the file instead of checking for a string
+        # TODO disable the ML button when the ML button is off and/or there is no .csv file present
+
+
+    terminator = tk.Button(
+        text="Run Machine Learning",
+        bg="Red",
+        fg="White",
+        width=18,
+        state='disabled',
+        command=termbuttondecide
+        # command=lambda: machinelearning(CSV.get(), ML.get())
+    )
+    # button to run ML
+
+
+
     # TODO this should freeze the program while ML runs, a pop-up box should appear while it runs, then says when done
     space0 = tk.Label(text="______________________________________________________________________________")
     space0.pack()
@@ -143,102 +156,103 @@ def maingui():
     mlbutton.pack(pady=5)
     MLwarning1.pack()
     MLwarning2.pack()
+    terminator.pack()
     space1 = tk.Label(text="______________________________________________________________________________")
     space1.pack()
-
-    # makes a line to separate the GUI (just for visuals)
-    def changelabel():
-        if buttonchoice['text'] == 'No':
-            buttonchoice['text'] = 'Yes'
-            if buttonchoice['text'] == 'Yes':
-                longmin_txt.config(state='normal')
-                longmax_txt.config(state='normal')
-                latmin_txt.config(state='normal')
-                latmax_txt.config(state='normal')
-        else:
-            buttonchoice['text'] = 'No'
-            if buttonchoice['text'] == 'No':
-                longmin_txt.config(state='disabled')
-                longmax_txt.config(state='disabled')
-                latmin_txt.config(state='disabled')
-                latmax_txt.config(state='disabled')
-                # changes the LAT/LONG from modifiable to disabled text box
-
-    rangechoice = tk.Label(gui, text="Do you want to use specific domain/range?")
-    buttonchoice = tk.Button(
-        gui,
-        text="No",
-        fg="black",
-        bg="white",
-        activebackground="green",
-        width=6,
-        command=changelabel
-    )
-
-    LONG_MIN = tk.DoubleVar()
-    # retrieves minimum longitude as float
-    longmin = tk.Label(gui, text="Minimum longitude: ")
-    longmin_txt = tk.Entry(
-        gui,
-        textvariable=LONG_MIN,
-        fg="blue",
-        bg="white",
-        state='disabled',
-        width=25
-    )
-    LONG_MAX = tk.DoubleVar()
-    # retrieves maximum longitude as float
-    longmax = tk.Label(gui, text="Maximum longitude: ")
-    longmax_txt = tk.Entry(
-        gui,
-        textvariable=LONG_MAX,
-        fg="blue",
-        bg="white",
-        state='disabled',
-        width=25
-    )
-    # LONG
-    LAT_MIN = tk.DoubleVar()
-    # retrieves minimum latitude as float
-    latmin = tk.Label(gui, text="Minimum latitude: ")
-    latmin_txt = tk.Entry(
-        gui,
-        textvariable=LAT_MIN,
-        fg="green",
-        bg="white",
-        state='disabled',
-        width=25
-    )
-
-    LAT_MAX = tk.DoubleVar()
-    # retrieves maximum latitude as float
-    latmax = tk.Label(gui, text="Maximum latitude: ")
-    latmax_txt = tk.Entry(
-        gui,
-        textvariable=LAT_MAX,
-        fg="green",
-        bg="white",
-        state='disabled',
-        width=25
-    )
-
-    rangechoice.pack()
-    buttonchoice.pack()
-    # choosing whether to use specific lat and long values
-
-    longmin.pack()
-    longmin_txt.pack()
-    longmax.pack()
-    longmax_txt.pack()
-
-    latmin.pack()
-    latmin_txt.pack()
-    latmax.pack()
-    latmax_txt.pack()
-    # LAT
-
-    space2 = tk.Label(text="______________________________________________________________________________")
-    space2.pack()
+    #
+    # # makes a line to separate the GUI (just for visuals)
+    # def changelabel():
+    #     if buttonchoice['text'] == 'No':
+    #         buttonchoice['text'] = 'Yes'
+    #         if buttonchoice['text'] == 'Yes':
+    #             longmin_txt.config(state='normal')
+    #             longmax_txt.config(state='normal')
+    #             latmin_txt.config(state='normal')
+    #             latmax_txt.config(state='normal')
+    #     else:
+    #         buttonchoice['text'] = 'No'
+    #         if buttonchoice['text'] == 'No':
+    #             longmin_txt.config(state='disabled')
+    #             longmax_txt.config(state='disabled')
+    #             latmin_txt.config(state='disabled')
+    #             latmax_txt.config(state='disabled')
+    #             # changes the LAT/LONG from modifiable to disabled text box
+    #
+    # rangechoice = tk.Label(gui, text="Do you want to use specific domain/range?")
+    # buttonchoice = tk.Button(
+    #     gui,
+    #     text="No",
+    #     fg="black",
+    #     bg="white",
+    #     activebackground="green",
+    #     width=6,
+    #     command=changelabel
+    # )
+    #
+    # LONG_MIN = tk.DoubleVar()
+    # # retrieves minimum longitude as float
+    # longmin = tk.Label(gui, text="Minimum longitude: ")
+    # longmin_txt = tk.Entry(
+    #     gui,
+    #     textvariable=LONG_MIN,
+    #     fg="blue",
+    #     bg="white",
+    #     state='disabled',
+    #     width=25
+    # )
+    # LONG_MAX = tk.DoubleVar()
+    # # retrieves maximum longitude as float
+    # longmax = tk.Label(gui, text="Maximum longitude: ")
+    # longmax_txt = tk.Entry(
+    #     gui,
+    #     textvariable=LONG_MAX,
+    #     fg="blue",
+    #     bg="white",
+    #     state='disabled',
+    #     width=25
+    # )
+    # # LONG
+    # LAT_MIN = tk.DoubleVar()
+    # # retrieves minimum latitude as float
+    # latmin = tk.Label(gui, text="Minimum latitude: ")
+    # latmin_txt = tk.Entry(
+    #     gui,
+    #     textvariable=LAT_MIN,
+    #     fg="green",
+    #     bg="white",
+    #     state='disabled',
+    #     width=25
+    # )
+    #
+    # LAT_MAX = tk.DoubleVar()
+    # # retrieves maximum latitude as float
+    # latmax = tk.Label(gui, text="Maximum latitude: ")
+    # latmax_txt = tk.Entry(
+    #     gui,
+    #     textvariable=LAT_MAX,
+    #     fg="green",
+    #     bg="white",
+    #     state='disabled',
+    #     width=25
+    # )
+    #
+    # rangechoice.pack()
+    # buttonchoice.pack()
+    # # choosing whether to use specific lat and long values
+    #
+    # longmin.pack()
+    # longmin_txt.pack()
+    # longmax.pack()
+    # longmax_txt.pack()
+    #
+    # latmin.pack()
+    # latmin_txt.pack()
+    # latmax.pack()
+    # latmax_txt.pack()
+    # # LAT
+    #
+    # space2 = tk.Label(text="______________________________________________________________________________")
+    # space2.pack()
 
     # makes a line to separate the GUI (just for visuals)
 
@@ -260,7 +274,6 @@ def maingui():
             return lags_true
         else:
             return
-
 
     lags_txt = tk.Label(text="Enter the number of lags for the Variogram:")
     lag_opt = ["6", "8", "10", "15", "20"]
@@ -329,19 +342,40 @@ def maingui():
 
     # dropdown menu
 
+    dirtval = BooleanVar()
+
+    def dirt():
+        if dirtysel['text'] == 'NO':
+            dirtysel['text'] = 'YES'
+            dirtval.set(True)
+            # sends out a value for true
+            # true means they want the dirty values
+        else:
+            dirtysel['text'] = 'NO'
+            dirtval.set(False)
+            # false means they do not want the dirty values
+
+    dirtylab = tk.Label(text="Do you want to keep the dirty values?")
+    dirtysel = tk.Button(
+        text="NO",
+        command=dirt
+    )
+    dirtylab.pack()
+    dirtysel.pack()
+
+    space0 = tk.Label(text="______________________________________________________________________________")
+    space0.pack()
+
     runbutton = tk.Button(
         text="Run",
         bg="Red",
         fg="White",
         activebackground="Green",
         width=10,
-        command=lambda: guidrop(CSV.get(), SHP.get(), LONG_MIN.get(), LONG_MAX.get(), LAT_MIN.get(), LAT_MAX.get(),
-                                dropdown.get(), ML.get(), EXV.get(), lags_true.get())
+        command=lambda: guidrop(CSV.get(), SHP.get(), ML.get(), lags_true.get(), EXV.get(), dropdown.get(), dirtval.get())
     )
-    runbutton.pack(pady=3)
-    space0 = tk.Label(text="______________________________________________________________________________")
-    space0.pack()
     # just creates a button to click when the program is ready to run, then sends values to main
+    runbutton.pack(pady=3)
 
 
 maingui()
