@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import filedialog
+import os
 
 
 # TODO create directory for import files to go
@@ -19,10 +20,10 @@ def guidrop(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     # this will be implemented into the main kriging function eventually, passes the values received by the GUI to
     # back-end function.
 
+
 def machinelearning(CSV, ML):
     print(CSV)
     print(ML)
-
 
 
 gui = Tk(className="-GENEX GUI tool-")
@@ -30,10 +31,16 @@ gui.geometry("340x660")
 
 
 def maingui():
+
     def csvfile():
         entry_one.delete(0, END)
         csv_path = filedialog.askopenfile()
-        csv_copy = csv_path
+        csv_path_true = tk.StringVar()
+        if csv_path:
+            csv_path_true = os.path.abspath(csv_path.name)
+        csv_copy = csv_path_true
+        # csv_path has the true file path
+        # TODO have the gui return this instead of the string
         csv_copy = csv_copy.__str__()
         notcsv = "File must be a '.csv' file!"
         # retrieves the file
@@ -71,6 +78,8 @@ def maingui():
         entry_two.delete(0, END)
         shp_path = filedialog.askopenfile()
         shp_copy = shp_path
+        # shp_path is the true file path
+        # TODO have the gui return this instead of the string
         shp_copy = shp_copy.__str__()
         # retrieves the file
         shp_copy2 = shp_copy.replace("<_io.TextIOWrapper name='", '').replace("' mode='r' encoding='cp1252'>", '')
@@ -110,6 +119,7 @@ def maingui():
         fg='black',
         activebackground='purple',
         width=19,
+        state="disabled",
         command=skynet
     )
     # Machine learning
@@ -123,25 +133,37 @@ def maingui():
         fg="red"
     )
 
-    def termbuttondecide():
-        a = CSV.get() # string variable
-        b = ML.get() # boolean variable
-        # TODO should find a way to make a boolean variable for the file instead of checking for a string
-        # TODO disable the ML button when the ML button is off and/or there is no .csv file present
+    # def updater():
+    # a = csvbool
+    # b = ML
+    # # they are both boolean values, set as 'a' and 'b' for simplicity, honestly could've done without the change
+    # testerstring = "one"
+    # if a is True and b is True:
+    #     testerstring = "three"
+    #     # sets a single string to a 5-letter word as opposed to a 3-letter word
+    # else:
+    #     testerstring = "one"
+    #     # if one or both are false, then the string is a 3-letter word
+    # while len(testerstring) > 4:
+    #     terminator.config(state='normal')
+    #     # if the length of the string is more than 4, then the button will be active
+    # else:
+    #     terminator.config(state='disabled')
+    #     # if the string is less than 4, then it will stay disabled
+    #     # TODO make this work, actually
 
+    # TODO disable the ML button when the ML button is off and/or there is no .csv file present
 
     terminator = tk.Button(
         text="Run Machine Learning",
-        bg="Red",
+        bg="Grey",
         fg="White",
         width=18,
-        state='disabled',
-        command=termbuttondecide
+        state="disabled"
+
         # command=lambda: machinelearning(CSV.get(), ML.get())
     )
     # button to run ML
-
-
 
     # TODO this should freeze the program while ML runs, a pop-up box should appear while it runs, then says when done
     space0 = tk.Label(text="______________________________________________________________________________")
@@ -159,6 +181,7 @@ def maingui():
     terminator.pack()
     space1 = tk.Label(text="______________________________________________________________________________")
     space1.pack()
+
     #
     # # makes a line to separate the GUI (just for visuals)
     # def changelabel():
@@ -372,7 +395,8 @@ def maingui():
         fg="White",
         activebackground="Green",
         width=10,
-        command=lambda: guidrop(CSV.get(), SHP.get(), ML.get(), lags_true.get(), EXV.get(), dropdown.get(), dirtval.get())
+        command=lambda: guidrop(CSV.get(), SHP.get(), ML.get(), lags_true.get(), EXV.get(),
+                                dropdown.get(), dirtval.get())
     )
     # just creates a button to click when the program is ready to run, then sends values to main
     runbutton.pack(pady=3)

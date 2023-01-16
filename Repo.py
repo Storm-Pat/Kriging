@@ -28,7 +28,7 @@ def repo():
     # changing coords, changes the projection too
     shapefull = shape.set_crs(epsg=4326)
     # reading it back out to a file under the cookie cutters, separate from the og shapefiles
-    shapefull.to_file(driver='ESRI Shapefile', filename="../cookie_cutters")
+    shapefull.to_file(driver='ESRI Shapefile', filename="cookie_cutters")
     # Shit becomes shape again in main lol
     # grabbing the min and maxes
     extrema = shapefull.bounds

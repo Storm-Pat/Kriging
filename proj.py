@@ -7,7 +7,7 @@ import pandas as pd
 def tolatlon():
     # reading in Iver 3 csv data
     oldpwd = os.getcwd()
-    os.chdir('input')
+    os.chdir('Kriging/input')
     # creating a list of all the files in the csv directory
     all_files = [i for i in glob.glob('*.{}'.format('csv'))]
     df = pd.concat([pd.read_csv(f) for f in all_files])

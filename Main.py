@@ -1,7 +1,7 @@
 #!./usr/bin/env python
 # I refuse to use oop for this project
-import os
 import shutil
+import os
 import pandas as pd
 # import Kriging
 import Write_Shape
@@ -19,14 +19,39 @@ if __name__ == '__main__':
     # TODO implement all GUI (link it to back end code)
     # truncating the cookie cutters, shapefiles, and outputtiff folder here
     # starting with the cookie cutters
-    shutil.rmtree('../cookie_cutters')
-    os.mkdir('../cookie_cutters')
     # same but with point shapefiles
-    shutil.rmtree('Outputs')
-    os.mkdir('Outputs')
+    # finding users native directory
+    home_dir = os.path.expanduser('~')
+    # "naming" directories to store i/o operations
+    directory1 = "Input_CSV"
+    directory2 = "Input_SHP"
+    directory3 = "output_files"
+    # parent directory
+    parent_directory = "Field-Interp-Tool"
+    path0 = os.path.join(home_dir, 'Documents')
+    path1 = os.path.join(path0, parent_directory)
+    path2 = os.path.join(path1, directory1)  # CSV
+    path3 = os.path.join(path1, directory2)  # SHP
+    path4 = os.path.join(path1, directory3)  # output files
+    if not os.path.exists(path2):
+        os.mkdir(path2)
+    else:
+        path2 = path2
+    if not os.path.exists(path3):
+        os.mkdir(path3)
+    else:
+        path3 = path3
+    if not os.path.exists(path4):
+        os.mkdir(path4)
+    else:
+        path4 = path4
+    # actually creating and appending directories
     # call the GUI
     CSV, SHP, dropdown, ML, EXV, WHEY, lags_true = GUI_test.maingui()
     # really the main while loop where the magic happens after initializing everything
+    shutil.copy(CSV, path1)
+    shutil.copy(SHP, path2)
+    # copying data over to program directories (its more fun this way, trust me)
     while True:
         # concatenating and labeling the data
         df = proj.tolatlon()
@@ -106,12 +131,12 @@ if __name__ == '__main__':
         Clip.clip()
 
         # prompting user to leave the program/or re-run
-        while True:
-            leave = input("Would you like to preform another kriging[y/n]?")
-            if leave.lower() == "no" or leave.lower() == "n":
-                quit()
-            elif leave.lower() == 'yes' or leave.lower() == 'y':
-                break
-            else:
-                print("Enter y/n or yes/no.")
-                # TODO need to implement this in the GUI so we can perform multiple krigings without closing program
+        # while True:
+        # leave = input("Would you like to preform another kriging[y/n]?")
+        # if leave.lower() == "no" or leave.lower() == "n":
+        # quit()
+        # elif leave.lower() == 'yes' or leave.lower() == 'y':
+        # break
+        # else:
+        # print("Enter y/n or yes/no.")
+        # TODO need to implement this in the GUI so we can perform multiple krigings without closing program

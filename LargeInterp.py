@@ -2,7 +2,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy import interpolate
-import Chauv
+from code import Chauv
+
 df = pd.read_csv("input/SNDG00002_flyers_removed.csv")
 lon_min=-84.646129
 lon_max=-84.644108

@@ -2,9 +2,11 @@ import rasterio
 import fiona
 import rasterio.mask
 import time
+import GUI_test
 def clip():
+    SHP = GUI_test.maingui()
     #reprojecting shape file
-    with fiona.open('/home/pabritt/Krig/cookie_cutters/cookie_cutters.shp','r') as f:
+    with fiona.open(SHP,'r') as f:
         shapes = [feature["geometry"] for feature in f]
     #opening raster and clipping now inshallah (I copied this context manager from the rasterio wiki lol)
     #https://rasterio.readthedocs.io/en/latest/topics/masking-by-shapefile.html pretty fucking niftey

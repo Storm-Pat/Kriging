@@ -1,46 +1,27 @@
-import tkinter as tk
+# Import the required Libraries
 from tkinter import *
-# import GUI_test
+from tkinter import ttk, filedialog
+from tkinter.filedialog import askopenfile
+import os
 
-# from tkinter import filedialog
+# Create an instance of tkinter frame
+win = Tk()
 
-# will need to use filedialog since the GUI would be pulling the output file location for the user
-# it's not entirely useless...I didn't say that, you did
-outgui = Tk(className="-GENEX GUI tool")
-outgui.geometry("200x200")
+# Set the geometry of tkinter frame
+win.geometry("700x350")
 
-
-def guistuff():
-    outfiletxt = tk.Label(text="Location of file:")
-    outfile = tk.Entry(
-        outgui,
-        fg="green",
-        width=35,
-        state='disabled'
-        # disabled to ensure the user cannot change the contents of the box, they can only copy the file path
-        # TODO will have to input the file/file location into the entry box
-    )
-
-    quitbutton = tk.Button(
-        text="QUIT",
-        bg="red",
-        fg="white",
-        width=10,
-        command=outgui.quit
-    )
-
-    runagain = tk.Button(
-        text="RUN AGAIN?",
-        bg="green",
-        fg="white",
-        width=10
-        # TODO the button will have to reopen the original GUI and restart the program for new entries
-    )
-    outfiletxt.pack()
-    outfile.pack()
-    runagain.pack()
-    quitbutton.pack()
+def open_file():
+   file = filedialog.askopenfile(mode='r', filetypes=[('Python Files', '*.py')])
+   if file:
+      filepath = os.path.abspath(file.name)
+      Label(win, text="The File is located at : " + str(filepath), font=('Aerial 11')).pack()
 
 
-guistuff()
-outgui.mainloop()
+# Add a Label widget
+label = Label(win, text="Click the Button to browse the Files", font=('Georgia 13'))
+label.pack(pady=10)
+
+# Create a Button
+ttk.Button(win, text="Browse", command=open_file).pack(pady=20)
+
+win.mainloop()
