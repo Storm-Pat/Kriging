@@ -6,32 +6,29 @@ import os
 
 # TODO create directory for import files to go
 
-def guidrop(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
-    print(CSV)
-    print(SHP)
-    print("machines", ML)
-    print("number of lags", lags_true)
-    print("this is dirt", dirtval)
-    print("exact value", EXV)
-    print("krig type", dropdown)
-    # This is in the exact format of how the GUI entries are set up, with CSV input being first and ML being the last
-    # input
+# This is in the exact format of how the GUI entries are set up, with CSV input being first and ML being the last
+# input
 
-    # this will be implemented into the main kriging function eventually, passes the values received by the GUI to
-    # back-end function.
+# this will be implemented into the main kriging function eventually, passes the values received by the GUI to
+# back-end function.
 
-
-def machinelearning(CSV, ML):
-    print(CSV)
-    print(ML)
+def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
+    # create a dropping sequence that allows the gui to send the values to the back end
+    csvreturn = CSV
+    shpreturn = SHP
+    mlreturn = ML
+    lagsreturn = lags_true
+    exvalreturn = EXV
+    dropreturn = dropdown
+    dirtreturn = dirtval
+    return csvreturn, shpreturn, mlreturn, lagsreturn, exvalreturn, dropreturn, dirtreturn
 
 
-gui = Tk(className="-GENEX GUI tool-")
+gui = Tk(className="-Field Interpolation Tool [FIT gui]-")
 gui.geometry("340x660")
 
 
 def maingui():
-
     def csvfile():
         entry_one.delete(0, END)
         csv_path = filedialog.askopenfile()
@@ -42,10 +39,10 @@ def maingui():
         # csv_path has the true file path
         # TODO have the gui return this instead of the string
         csv_copy = csv_copy.__str__()
-        notcsv = "File must be a '.csv' file!"
+        notcsv = "File must be a '.csv' or '.shp' file!"
         # retrieves the file
         csv_copy2 = csv_copy.replace("<_io.TextIOWrapper name='", '').replace("' mode='r' encoding='cp1252'>", '')
-        if '.csv' in csv_copy2:
+        if '.csv' or '.shp' in csv_copy2:
             entry_one.insert(
                 0,
                 csv_copy2
@@ -57,10 +54,9 @@ def maingui():
                 notcsv
             )
 
-    CSV = tk.StringVar()
-    inpone = tk.Label(text="Input .csv file(s) or folder.")
+    CSV = tk.StringVar(gui)
+    inpone = tk.Label(text="Input .csv/.shp file(s) or folder.")
     entry_one = tk.Entry(
-        gui,
         textvariable=CSV,
         fg="red",
         bg="white",
@@ -88,10 +84,9 @@ def maingui():
             shp_copy2
         )
 
-    SHP = tk.StringVar()
+    SHP = tk.StringVar(gui)
     inp_two = tk.Label(text="Input .shp file(s) or folder.")
     entry_two = tk.Entry(
-        gui,
         textvariable=SHP,
         fg="red",
         bg="white",
@@ -103,7 +98,7 @@ def maingui():
         command=shpfile
     )
     # put OG shapefiles
-    ML = tk.BooleanVar()
+    ML = tk.BooleanVar(gui)
 
     def skynet():
         if mlbutton["text"] == "Machine Learning = OFF":
@@ -300,7 +295,7 @@ def maingui():
 
     lags_txt = tk.Label(text="Enter the number of lags for the Variogram:")
     lag_opt = ["6", "8", "10", "15", "20"]
-    lags_true = StringVar()
+    lags_true = StringVar(gui)
     lags_true.set("6")
     lags_ent = OptionMenu(gui, lags_true, *lag_opt, command=lagtype())
     lags_txt.pack()
@@ -308,7 +303,7 @@ def maingui():
     lags_ent.pack()
 
     # Nlags
-    EXV = BooleanVar()
+    EXV = BooleanVar(gui)
 
     def changetxt():
         if on_off_exval['text'] == 'Exact value = OFF':
@@ -333,7 +328,7 @@ def maingui():
 
     # booleans (exact value)
 
-    dropdown = tk.StringVar()
+    dropdown = tk.StringVar(gui)
 
     def type1():
         if options == "Linear":
@@ -357,7 +352,7 @@ def maingui():
         # returns a string of characters for the selected kriging type
 
     options = ["Linear", "Power", "Spherical", "Exponential", "Gaussian"]
-    dropdown = StringVar()
+    dropdown = StringVar(gui)
     dropdown.set("Linear")
     drop = OptionMenu(gui, dropdown, *options, command=type1())
     dropdown.get()
@@ -365,7 +360,7 @@ def maingui():
 
     # dropdown menu
 
-    dirtval = BooleanVar()
+    dirtval = BooleanVar(gui)
 
     def dirt():
         if dirtysel['text'] == 'NO':
@@ -390,13 +385,14 @@ def maingui():
     space0.pack()
 
     runbutton = tk.Button(
+        gui,
         text="Run",
         bg="Red",
         fg="White",
         activebackground="Green",
         width=10,
-        command=lambda: guidrop(CSV.get(), SHP.get(), ML.get(), lags_true.get(), EXV.get(),
-                                dropdown.get(), dirtval.get())
+        command=lambda: dropSEQ(CSV.get(), SHP.get(), ML.get(), lags_true.get(), EXV.get(),
+                             dropdown.get(), dirtval.get())
     )
     # just creates a button to click when the program is ready to run, then sends values to main
     runbutton.pack(pady=3)

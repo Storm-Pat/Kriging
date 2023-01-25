@@ -14,6 +14,23 @@ import proj
 import GUI_test
 import numpy as np
 
+
+def gui_run():
+    GUI_test.maingui()
+
+
+def guidrop(csv_gui, shp_gui, mach_learn, lags_true_gui, exval, krigtype, dirt):
+    GUI_test.dropSEQ(csv_gui, shp_gui, mach_learn, lags_true_gui, exval, krigtype, dirt)
+    return csv_gui, shp_gui, mach_learn, lags_true_gui, exval, krigtype, dirt
+
+
+def translator():
+    guidrop(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval)
+    if CSV or SHP or ML or lags_true or EXV or dropdown or dirtval is None:
+        print("Cannot fill values")
+    return CSV, SHP, ML, lags_true, EXV, dropdown, dirtval
+
+
 # main function
 if __name__ == '__main__':
     # TODO implement all GUI (link it to back end code)
@@ -23,16 +40,20 @@ if __name__ == '__main__':
     # finding users native directory
     home_dir = os.path.expanduser('~')
     # "naming" directories to store i/o operations
-    directory1 = "Input_CSV"
-    directory2 = "Input_SHP"
-    directory3 = "output_files"
+    directory1 = 'Input_CSV'
+    directory2 = 'Input_SHP'
+    directory3 = 'output_files'
     # parent directory
-    parent_directory = "Field-Interp-Tool"
+    parent_directory = 'Field-Interp-Tool'
     path0 = os.path.join(home_dir, 'Documents')
     path1 = os.path.join(path0, parent_directory)
     path2 = os.path.join(path1, directory1)  # CSV
     path3 = os.path.join(path1, directory2)  # SHP
     path4 = os.path.join(path1, directory3)  # output files
+    if not os.path.exists(path1):
+        os.mkdir(path1)
+    else:
+        path1 = path1
     if not os.path.exists(path2):
         os.mkdir(path2)
     else:
@@ -45,12 +66,16 @@ if __name__ == '__main__':
         os.mkdir(path4)
     else:
         path4 = path4
+
     # actually creating and appending directories
     # call the GUI
-    CSV, SHP, dropdown, ML, EXV, WHEY, lags_true = GUI_test.maingui()
+
+    CSV, SHP, ML, lags_true, EXV, dropdown, dirtval = translator()
+
     # really the main while loop where the magic happens after initializing everything
     shutil.copy(CSV, path1)
     shutil.copy(SHP, path2)
+    print("running")
     # copying data over to program directories (its more fun this way, trust me)
     while True:
         # concatenating and labeling the data
@@ -115,7 +140,7 @@ if __name__ == '__main__':
                 # since the GUI returns a string, setting a new variable to a value will avoid a string to int cast
             except:
                 continue
-        # prompting the user to select the whether to use exact values or not
+                # grabs the value from the gui received for exact values
         while True:
             exact = EXV
 
@@ -127,7 +152,7 @@ if __name__ == '__main__':
         # z for values
         Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)
 
-        # clipping the tif here, using the cookie cutter and outputted tiff under write tiff function.
+        # clipping the tif here, using the cookie cutter and outputted tiff underwrite tiff function.
         Clip.clip()
 
         # prompting user to leave the program/or re-run
@@ -139,4 +164,5 @@ if __name__ == '__main__':
         # break
         # else:
         # print("Enter y/n or yes/no.")
+        main()
         # TODO need to implement this in the GUI so we can perform multiple krigings without closing program

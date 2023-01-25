@@ -1,12 +1,23 @@
 import scipy as sp
+import Main
 
 
 def chauv(df):
+    csv_gui = None
+    shp_gui = None
+    mach_learn = None
+    lags_true_gui = None
+    exval = None
+    krigtype = None
+    dirt = None
+
+    CSV, SHP, ML, lags_true, EXV, dropdown, dirtval = Main.guidrop(csv_gui, shp_gui, mach_learn, lags_true_gui, exval,
+                                                              krigtype, dirt)
     # defining boundary p value
     P = 1 / (2 * len(df))
     # initializing what will be clean data_frame
     df_clean = df
-    # dirty array uwu
+    # dirty array
     dirty = []
     # mean value
     mean = df.iloc[:, 2].mean()
@@ -24,20 +35,17 @@ def chauv(df):
             dirty.append(i)
             df_clean = df_clean[df_clean.Depth_m != i]
             df_clean = df_clean.reset_index(drop=True)
-    print("These are the dirty values:")
-    print(dirty)
+
     while True:
-        y_n = input("Would you like to discard the dirty values[y/n]?")
-        if y_n.lower() == "yes" or y_n.lower() == "y":
-            print("Discarding dirty values.")
+        y_n = dirtval
+        # setting local variable to the variable received from the gui
+        if y_n:
             # writing out dataframe
-            df_clean.to_csv("Outputs/clean_data.csv")
+            df_clean.to_csv("output_files/clean_data.csv")
             return df_clean
-        elif y_n.lower() == "no" or y_n.lower() == "n":
-            print("Keeping dirty values.")
+        elif y_n is False:
             # writing it out again
-            df.to_csv('Outputs/raw_data.csv')
+            df.to_csv('output_files/raw_data.csv')
             return df
         else:
-            print("Enter yes/no or y/n")
             continue

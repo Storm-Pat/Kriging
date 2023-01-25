@@ -4,6 +4,10 @@ from pykrige.ok import OrdinaryKriging
 import multiprocessing
 
 
+# TODO figure out a way to include multiprocessing in this section
+# the section for kriging is very slow and could benefit from kriging, although it may already utilize MP
+
+
 def kriging(df, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact=False):
     # formatting the data
     x_val = df.iloc[:, 0]

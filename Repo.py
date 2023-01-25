@@ -1,10 +1,19 @@
 import geopandas as gpd
-import GUI_test
+import Main
 
 
 def repo():
     # call the GUI
-    CSV, SHP, LONG_MIN, LONG_MAX, LAT_MIN, LAT_MAX, dropdown, ML, EXV, WHEY, lags_true = GUI_test.maingui()
+    csv_gui = None
+    shp_gui = None
+    mach_learn = None
+    lags_true_gui = None
+    exval = None
+    krigtype = None
+    dirt = None
+
+    CSV, SHP, ML, lags_true, EXV, dropdown, dirtval = Main.guidrop(csv_gui, shp_gui, mach_learn, lags_true_gui, exval,
+                                                              krigtype, dirt)
     # grabbing the shp file automatically
 
     # THIS ACTION HAS SAVED MY SANITY #
@@ -29,7 +38,6 @@ def repo():
     shapefull = shape.set_crs(epsg=4326)
     # reading it back out to a file under the cookie cutters, separate from the og shapefiles
     shapefull.to_file(driver='ESRI Shapefile', filename="cookie_cutters")
-    # Shit becomes shape again in main lol
     # grabbing the min and maxes
     extrema = shapefull.bounds
     lon_min = (extrema['minx'])
