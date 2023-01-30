@@ -14,14 +14,7 @@ import os
 
 def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     # create a dropping sequence that allows the gui to send the values to the back end
-    csvreturn = CSV
-    shpreturn = SHP
-    mlreturn = ML
-    lagsreturn = lags_true
-    exvalreturn = EXV
-    dropreturn = dropdown
-    dirtreturn = dirtval
-    return csvreturn, shpreturn, mlreturn, lagsreturn, exvalreturn, dropreturn, dirtreturn
+    return CSV, SHP, ML, lags_true, EXV, dropdown, dirtval
 
 
 gui = Tk(className="-Field Interpolation Tool [FIT gui]-")

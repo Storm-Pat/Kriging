@@ -11,33 +11,20 @@ import Chauv
 # import Switch
 import CV
 import proj
-import GUI_test
 import numpy as np
-
-
-def gui_run():
-    GUI_test.maingui()
-
-
-def guidrop(csv_gui, shp_gui, mach_learn, lags_true_gui, exval, krigtype, dirt):
-    GUI_test.dropSEQ(csv_gui, shp_gui, mach_learn, lags_true_gui, exval, krigtype, dirt)
-    return csv_gui, shp_gui, mach_learn, lags_true_gui, exval, krigtype, dirt
-
-
-def translator():
-    guidrop(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval)
-    if CSV or SHP or ML or lags_true or EXV or dropdown or dirtval is None:
-        print("Cannot fill values")
-    return CSV, SHP, ML, lags_true, EXV, dropdown, dirtval
+import GUI_test
 
 
 # main function
-if __name__ == '__main__':
+def initializer(csv, shp, ml, lags, exval, drop, dirt):
     # TODO implement all GUI (link it to back end code)
     # truncating the cookie cutters, shapefiles, and outputtiff folder here
     # starting with the cookie cutters
     # same but with point shapefiles
     # finding users native directory
+    GUI_test.maingui()
+    CSV, SHP, ML, lags_true, EXV, dropdown, dirval = GUI_test.dropSEQ(csv, shp, ml, lags, exval, drop, dirt)
+    print(csv)
     home_dir = os.path.expanduser('~')
     # "naming" directories to store i/o operations
     directory1 = 'Input_CSV'
@@ -69,8 +56,6 @@ if __name__ == '__main__':
 
     # actually creating and appending directories
     # call the GUI
-
-    CSV, SHP, ML, lags_true, EXV, dropdown, dirtval = translator()
 
     # really the main while loop where the magic happens after initializing everything
     shutil.copy(CSV, path1)
