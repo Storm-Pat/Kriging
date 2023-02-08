@@ -2,20 +2,10 @@ import rasterio
 import fiona
 import rasterio.mask
 import time
-import Main
 
 
-def clip():
-    csv_gui = None
-    shp_gui = None
-    mach_learn = None
-    lags_true_gui = None
-    exval = None
-    krigtype = None
-    dirt = None
+def clip(SHP):
 
-    CSV, SHP, ML, lags_true, EXV, dropdown, dirtval = Main.guidrop(csv_gui, shp_gui, mach_learn, lags_true_gui, exval,
-                                                              krigtype, dirt)
     # reprojecting shape file
     with fiona.open(SHP, 'r') as f:
         shapes = [feature["geometry"] for feature in f]

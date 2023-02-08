@@ -14,18 +14,20 @@ def tolatlon():
     path0 = os.path.join(home_dir, 'Documents')
     path1 = os.path.join(path0, parent_directory)
     path2 = os.path.join(path1, directory1)
-    # "re-pointing" to the directory for the input csv file
-    # reading in Iver 3 csv data
-    oldpwd = os.getcwd()
-    os.chdir(path2)
-    # checking the path
-    # creating a list of all the files in the csv directory
-    all_files = [i for i in glob.glob('*.{}'.format('csv'))]
-    df = pd.concat([pd.read_csv(f) for f in all_files])
-    # setting program directory back to home
-    os.chdir(oldpwd)
-    # settings the depth values negative
-    df.iloc[:, 2] = -1 * df.iloc[:, 2]
-    # removing positive values
-    df = df[df.iloc[:, 2] >= 0]
-    return df
+    # introducing the path where the input files are being stored
+    CSV = os.listdir(path2)
+    for x in CSV:
+        # set up for list of files (for later in development)
+        path3 = os.path.join(path2, x)
+        # checking the path
+        # creating a list of all the files in the csv director
+        df = pd.concat([pd.read_csv(path3, sep=',', header=None)])
+        idx = pd.IndexSlice
+        df = df.iloc[idx[:, 2]].astype(float)
+        # settings the depth values negative
+        df1 = -1 * df
+        # removing positive values
+        # df = df1 >= 0.0
+        # print(df)
+        # print(type(df))
+        return df1

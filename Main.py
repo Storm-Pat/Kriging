@@ -12,19 +12,20 @@ import Chauv
 import CV
 import proj
 import numpy as np
-import GUI_test
+import LargeInterp
 
 
 # main function
-def initializer(csv, shp, ml, lags, exval, drop, dirt):
-    # TODO implement all GUI (link it to back end code)
-    # truncating the cookie cutters, shapefiles, and outputtiff folder here
-    # starting with the cookie cutters
-    # same but with point shapefiles
-    # finding users native directory
-    GUI_test.maingui()
-    CSV, SHP, ML, lags_true, EXV, dropdown, dirval = GUI_test.dropSEQ(csv, shp, ml, lags, exval, drop, dirt)
-    print(csv)
+def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
+    print(CSV)
+    print(SHP)
+    print(ML)
+    print(lags_true)
+    print(EXV)
+    print(dropdown)
+    print(dirtval)
+    LargeInterp.csvfile(CSV)
+    # create a dropping sequence that allows the gui to send the values to the back end
     home_dir = os.path.expanduser('~')
     # "naming" directories to store i/o operations
     directory1 = 'Input_CSV'
@@ -37,18 +38,24 @@ def initializer(csv, shp, ml, lags, exval, drop, dirt):
     path2 = os.path.join(path1, directory1)  # CSV
     path3 = os.path.join(path1, directory2)  # SHP
     path4 = os.path.join(path1, directory3)  # output files
-    if not os.path.exists(path1):
-        os.mkdir(path1)
-    else:
-        path1 = path1
     if not os.path.exists(path2):
         os.mkdir(path2)
     else:
         path2 = path2
+        dir1 = os.listdir(path2)
+        if len(dir1) != 0:
+            shutil.rmtree(path2)
+            os.mkdir(path2)
+            # deletes the contents of the input files if there are any present
     if not os.path.exists(path3):
         os.mkdir(path3)
     else:
         path3 = path3
+        dir2 = os.listdir(path3)
+        if len(dir2) != 0:
+            shutil.rmtree(path3)
+            os.mkdir(path3)
+            # deletes the contents of the input files if there are any present
     if not os.path.exists(path4):
         os.mkdir(path4)
     else:
@@ -58,8 +65,8 @@ def initializer(csv, shp, ml, lags, exval, drop, dirt):
     # call the GUI
 
     # really the main while loop where the magic happens after initializing everything
-    shutil.copy(CSV, path1)
-    shutil.copy(SHP, path2)
+    shutil.copy(CSV, path2)
+    shutil.copy(SHP, path3)
     print("running")
     # copying data over to program directories (its more fun this way, trust me)
     while True:
@@ -82,13 +89,11 @@ def initializer(csv, shp, ml, lags, exval, drop, dirt):
             z1 = zi[~zi.mask] * -1
             df = pd.DataFrame({'Longitude': y1, 'Latitude': x1, 'Depth_m': z1}).astype("float64")
         # cleaning algorithm,returns chosen dataframe
-        df = Chauv.chauv(df)
+        df = Chauv.chauv(df, dirtval)
         # re-projecting the shapefile
-        shape, lat_max, lat_min, lon_max, lon_min = Repo.repo()
+        shape, lat_max, lat_min, lon_max, lon_min = Repo.repo(CSV)
         # writing shape file
         Write_Shape.write_file(df)
-        # UGLY ASS YANDERE DEV USER INPUT BOILERPLATE
-        # If only python 3.9 supported using match as a switch statement
         # searching for best parameters to try
         while True:
             if ML:
@@ -101,7 +106,6 @@ def initializer(csv, shp, ml, lags, exval, drop, dirt):
             else:
                 ML = False
         # prompting user to run kriging type
-        krig_type = dropdown
         # nlags checking
         while True:
             intlag = 0
@@ -127,27 +131,16 @@ def initializer(csv, shp, ml, lags, exval, drop, dirt):
                 continue
                 # grabs the value from the gui received for exact values
         while True:
-            exact = EXV
+            EXV = EXV
 
         # START OF KRIGING #
         # we pass shape to mask the interpolation
         # Also going to error check in case of singular matrix or overload
+        krig_type = dropdown
         z, ss, gridx, gridy = Kriging.kriging(df, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact)
         # writing the tiff function, the grid is passed to define resolution, data frame defines domain and range,
         # z for values
         Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)
 
         # clipping the tif here, using the cookie cutter and outputted tiff underwrite tiff function.
-        Clip.clip()
-
-        # prompting user to leave the program/or re-run
-        # while True:
-        # leave = input("Would you like to preform another kriging[y/n]?")
-        # if leave.lower() == "no" or leave.lower() == "n":
-        # quit()
-        # elif leave.lower() == 'yes' or leave.lower() == 'y':
-        # break
-        # else:
-        # print("Enter y/n or yes/no.")
-        main()
-        # TODO need to implement this in the GUI so we can perform multiple krigings without closing program
+        Clip.clip(SHP)

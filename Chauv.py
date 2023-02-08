@@ -1,18 +1,15 @@
 import scipy as sp
-import Main
+import os
+
+home_dir = os.path.expanduser('~')
+parent_directory = 'Field-Interp-Tool'
+directory1 = 'output_files'
+path0 = os.path.join(home_dir, 'Documents')
+path1 = os.path.join(path0, parent_directory)
+path2 = os.path.join(path1, directory1)
 
 
-def chauv(df):
-    csv_gui = None
-    shp_gui = None
-    mach_learn = None
-    lags_true_gui = None
-    exval = None
-    krigtype = None
-    dirt = None
-
-    CSV, SHP, ML, lags_true, EXV, dropdown, dirtval = Main.guidrop(csv_gui, shp_gui, mach_learn, lags_true_gui, exval,
-                                                              krigtype, dirt)
+def chauv(df, dirtval):
     # defining boundary p value
     P = 1 / (2 * len(df))
     # initializing what will be clean data_frame
@@ -20,12 +17,12 @@ def chauv(df):
     # dirty array
     dirty = []
     # mean value
-    mean = df.iloc[:, 2].mean()
+    mean = df.mean()
     # standard deviation
-    sigma = df.iloc[:, 2].std()
+    sigma = df.std()
     # z score function
     z = lambda i: abs(i - mean) / sigma
-    for i in df.iloc[:, 2]:
+    for i in df:
         # computing z score
         zscore = z(i)
         # applying z score to 1-erf to produce a probability
@@ -33,7 +30,8 @@ def chauv(df):
         # checking the probability function output against the boundary
         if p < P:
             dirty.append(i)
-            df_clean = df_clean[df_clean.Depth_m != i]
+            print(df_clean)
+            df_clean = df_clean[df_clean != i]
             df_clean = df_clean.reset_index(drop=True)
 
     while True:
@@ -41,11 +39,13 @@ def chauv(df):
         # setting local variable to the variable received from the gui
         if y_n:
             # writing out dataframe
-            df_clean.to_csv("output_files/clean_data.csv")
+            path3 = os.path.join(path2, "clean_data.csv")
+            df_clean.to_csv(path3)
             return df_clean
         elif y_n is False:
             # writing it out again
-            df.to_csv('output_files/raw_data.csv')
+            path4 = os.path.join(path2, "raw_data.csv")
+            df.to_csv(path4)
             return df
         else:
             continue
