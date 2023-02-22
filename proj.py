@@ -23,6 +23,8 @@ def tolatlon():
         # creating a list of all the files in the csv director
         df = pd.concat([pd.read_csv(path3, sep=',', header=None)])
         idx = pd.IndexSlice
+        long = df.iloc[idx[:, 0]].astype(float)
+        lat = df.iloc[idx[:, 1]].astype(float)
         df = df.iloc[idx[:, 2]].astype(float)
         # settings the depth values negative
         df1 = -1 * df
@@ -30,4 +32,4 @@ def tolatlon():
         # df = df1 >= 0.0
         # print(df)
         # print(type(df))
-        return df1
+        return long, lat, df1

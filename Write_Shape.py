@@ -1,5 +1,6 @@
-import fiona
 import os
+import pandas as pd
+import geopandas
 
 home_dir = os.path.expanduser('~')
 parent_directory = 'Field-Interp-Tool'
@@ -7,19 +8,18 @@ directory1 = 'output_files'
 path0 = os.path.join(home_dir, 'Documents')
 path1 = os.path.join(path0, parent_directory)
 path2 = os.path.join(path1, directory1)
-path3 = os.path.join(path2, "output.shp")
-# reading in function, takes file as an argument
-def write_file(df):
-    # setting up fiona schema
-    schema = {'geometry': 'Point', 'properties': [('Depth_m', 'float')]}
-    # creating a fiona object
-    shape = fiona.open(path3, mode='w', driver='ESRI Shapefile', schema=schema, crs='WGS84')
+path3 = os.path.join(path2, "output.csv")
+path4 = os.path.join(path2, "output.shp")
+# defining the paths
 
-    # creating points list
-    for i, j in df[[' Longitude', ' Latitude']].iterrows():
-        # TODO none of these are "in the index". should be first thing fixed, we are close to a solution.
-        rowDict = {'geometry': {'type': 'Point', 'coordinates': (j.Longitude, j.Latitude)},
-                   "properties": {'Depth_m': df[i, 2]}}
-        shape.write(rowDict)
-    # writing and closing the file
-    shape.close()
+
+def write_file(long, lat, df):
+    columns = {'long': long, 'lat': lat, 'depth(m)': df}
+    # creating a csv with corrected negative depth values
+    data = pd.DataFrame(columns)
+    data.to_csv(path3)
+    # writing the dataframe out to csv file
+    geodata = geopandas.GeoDataFrame(geometry=geopandas.points_from_xy(long, lat, df))
+    print(geodata)
+    geodata.to_file(path4, driver='ESRI Shapefile', encoding='utf-8', crs='EPSG:4326', engine="fiona")
+    # closing the shapefile

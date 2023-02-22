@@ -30,7 +30,6 @@ def chauv(df, dirtval):
         # checking the probability function output against the boundary
         if p < P:
             dirty.append(i)
-            print(df_clean)
             df_clean = df_clean[df_clean != i]
             df_clean = df_clean.reset_index(drop=True)
 

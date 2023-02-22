@@ -71,7 +71,7 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     # copying data over to program directories (its more fun this way, trust me)
     while True:
         # concatenating and labeling the data
-        df = proj.tolatlon()
+        long, lat, df = proj.tolatlon()
         # for the large datasets that need to be interpolated
         if len(df) > 20000:
             zi, yi, xi = np.histogram2d(df.iloc[:, 1], df.iloc[:, 0], bins=(140, 140), weights=df.iloc[:, 2],
@@ -93,7 +93,7 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
         # re-projecting the shapefile
         shape, lat_max, lat_min, lon_max, lon_min = Repo.repo(CSV)
         # writing shape file
-        Write_Shape.write_file(df)
+        Write_Shape.write_file(long, lat, df)
         # searching for best parameters to try
         while True:
             if ML:
@@ -103,8 +103,6 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
             elif not ML:
                 break
                 # ML is a boolean value from the GUI
-            else:
-                ML = False
         # prompting user to run kriging type
         # nlags checking
         while True:
