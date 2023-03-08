@@ -5,16 +5,16 @@ import os
 import Main
 
 gui = Tk(className="-Field Interpolation Tool [FIT gui]-")
-gui.geometry("340x660")
+gui.geometry("340x520")
 
 
 def maingui():
     def csvfile():
         entry_one.delete(0, END)
-        csv_path = filedialog.askopenfile()
+        csv_path = filedialog.askopenfilename(parent=gui, title="Choose a file.")
         csv_path_true = tk.StringVar()
         if csv_path:
-            csv_path_true = os.path.abspath(csv_path.name)
+            csv_path_true = os.path.abspath(csv_path)
         csv_copy = csv_path_true
         # csv_path has the true file path
         csv_copy = csv_copy.__str__()
@@ -196,29 +196,24 @@ def maingui():
     dropdown = tk.StringVar(gui)
 
     def type1():
-        if options == "Linear":
+        if options == "linear":
             dropdown1 = "linear"
-            return dropdown1 == "linear"
-        elif options == "Power":
+        elif options == "power":
             dropdown1 = "power"
-            return dropdown1 == "power"
-        elif options == "Spherical":
+        elif options == "spherical":
             dropdown1 = "spherical"
-            return dropdown1 == "spherical"
-        elif options == "Exponential":
+        elif options == "exponential":
             dropdown1 = "exponential"
-            return dropdown1 == "exponential"
-        elif options == "Gaussian":
+        elif options == "gaussian":
             dropdown1 = "gaussian"
-            return dropdown1 == "gaussian"
         else:
             return
 
         # returns a string of characters for the selected kriging type
 
-    options = ["Linear", "Power", "Spherical", "Exponential", "Gaussian"]
+    options = ["linear", "power", "spherical", "exponential", "gaussian"]
     dropdown = StringVar(gui)
-    dropdown.set("Linear")
+    dropdown.set("linear")
     drop = OptionMenu(gui, dropdown, *options, command=type1())
     dropdown.get()
     drop.pack(pady=5)

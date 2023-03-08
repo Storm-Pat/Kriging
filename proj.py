@@ -28,8 +28,9 @@ def tolatlon():
         df = df.iloc[idx[:, 2]].astype(float)
         # settings the depth values negative
         df1 = -1 * df
+        fulldf = [long, lat, df1]
         # removing positive values
         # df = df1 >= 0.0
         # print(df)
         # print(type(df))
-        return long, lat, df1
+        return long, lat, df1, fulldf

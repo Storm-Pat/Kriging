@@ -9,8 +9,7 @@ path0 = os.path.join(home_dir, 'Documents')
 path1 = os.path.join(path0, parent_directory)
 path2 = os.path.join(path1, directory1)
 path3 = os.path.join(path2, "output.csv")
-path4 = os.path.join(path2, "output.shp")
-path5 = os.path.join(path2, "Complete-shape.shp")
+path4 = os.path.join(path2, "Complete-shape.shp")
 
 
 # defining the paths

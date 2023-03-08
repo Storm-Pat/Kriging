@@ -3,12 +3,12 @@
 import shutil
 import os
 import pandas as pd
-# import Kriging
+import Kriging
 import Write_Shape
-# import Write_Tiff
+import Write_Tiff
 import Repo
 import Chauv
-# import Switch
+import Clip
 import CV
 import proj
 import numpy as np
@@ -67,16 +67,16 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     # really the main while loop where the magic happens after initializing everything
     shutil.copy(CSV, path2)
     shutil.copy(SHP, path3)
-    print("running")
     # copying data over to program directories (its more fun this way, trust me)
     while True:
         # concatenating and labeling the data
-        long, lat, df = proj.tolatlon()
+        long, lat, df, fulldf = proj.tolatlon()
         # for the large datasets that need to be interpolated
         if len(df) > 20000:
-            zi, yi, xi = np.histogram2d(df.iloc[:, 1], df.iloc[:, 0], bins=(140, 140), weights=df.iloc[:, 2],
-                                        normed=False)
-            counts, _, _ = np.histogram2d(df.iloc[:, 1], df.iloc[:, 0], bins=(140, 140))
+            idx = pd.IndexSlice
+            zi, yi, xi = np.histogram2d(df.iloc[idx[:, 1]], df.iloc[idx[:, 0]], bins=(140, 140),
+                                        weights=df.iloc[idx[:, 2]], normed=False)
+            counts, _, _ = np.histogram2d(df.iloc[idx[:, 1]], df.iloc[idx[:, 0]], bins=(140, 140))
             zi = zi / counts
             # correcting for the difference in zi and the axis
             xi = np.linspace(xi.min(), xi.max(), len(zi), zi.shape[0], dtype="float64")
@@ -91,7 +91,7 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
         # cleaning algorithm,returns chosen dataframe
         df = Chauv.chauv(df, dirtval)
         # re-projecting the shapefile
-        shape, lat_max, lat_min, lon_max, lon_min = Repo.repo(CSV)
+        shape, lat_max, lat_min, lon_max, lon_min = Repo.repo(long, lat, df, CSV)
         # writing shape file
         Write_Shape.write_file(long, lat, df)
         # searching for best parameters to try
@@ -128,17 +128,16 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
             except:
                 continue
                 # grabs the value from the gui received for exact values
-        while True:
-            EXV = EXV
-
+        exact = EXV
         # START OF KRIGING #
         # we pass shape to mask the interpolation
         # Also going to error check in case of singular matrix or overload
         krig_type = dropdown
-        z, ss, gridx, gridy = Kriging.kriging(df, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact)
+        z, ss, gridx, gridy = Kriging.kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact)
         # writing the tiff function, the grid is passed to define resolution, data frame defines domain and range,
         # z for values
         Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)
 
         # clipping the tif here, using the cookie cutter and outputted tiff underwrite tiff function.
         Clip.clip(SHP)
+        return
