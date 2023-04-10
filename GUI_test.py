@@ -4,8 +4,8 @@ from tkinter import filedialog
 import os
 import Main
 
-gui = Tk(className="-Field Interpolation Tool [FIT gui]-")
-gui.geometry("340x520")
+gui = Tk(className="-Field Interpolation Tool [FIT]-")
+gui.geometry("340x560")
 
 
 def maingui():
@@ -45,6 +45,15 @@ def maingui():
         text="Open File",
         width=7,
         command=csvfile
+    )
+
+    csvwarn = tk.Label(
+        text=".CSV file must be in X, Y, Z format (Lat/Long/Depth)",
+        fg="Red"
+    )
+    csvwarn2 = tk.Label(
+        text=".CSV file should be in coordinate system WGS84 EPSG 4326",
+        fg="Red"
     )
 
     # put csvs here
@@ -127,6 +136,8 @@ def maingui():
     inpone.pack()
     entry_one.pack()
     csvbutton.pack()
+    csvwarn.pack()
+    csvwarn2.pack()
     inp_two.pack()
     entry_two.pack()
     shpbutton.pack()
@@ -223,19 +234,19 @@ def maingui():
     dirtval = BooleanVar(gui)
 
     def dirt():
-        if dirtysel['text'] == 'NO':
-            dirtysel['text'] = 'YES'
+        if dirtysel['text'] == 'YES':
+            dirtysel['text'] = 'NO'
             dirtval.set(True)
             # sends out a value for true
             # true means they want the dirty values
         else:
-            dirtysel['text'] = 'NO'
+            dirtysel['text'] = 'YES'
             dirtval.set(False)
             # false means they do not want the dirty values
 
     dirtylab = tk.Label(text="Do you want to keep the dirty values?")
     dirtysel = tk.Button(
-        text="NO",
+        text="YES",
         command=dirt
     )
     dirtylab.pack()

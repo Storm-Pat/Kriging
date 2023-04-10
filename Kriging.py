@@ -1,16 +1,28 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from pykrige.ok import OrdinaryKriging
+import os
+import rasterio
+import rasterio.mask
+import fiona
 import multiprocessing
 
 
 # TODO figure out a way to include multiprocessing in this section
 # the section for kriging is very slow and could benefit from kriging, although it may already utilize MP
 
+home_dir = os.path.expanduser('~')
+directory = 'output_files'
+parent_directory = 'Field-Interp-Tool'
+path0 = os.path.join(home_dir, 'Documents')
+path1 = os.path.join(path0, parent_directory)
+path2 = os.path.join(path1, 'Kriging-result.tif')
+path3 = os.path.join(path1, 'Kriging-error.tif')
 
 def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact):
     # formatting the data
     # doing the kriging
+    print(fulldf)
     OK = OrdinaryKriging(fulldf[0], fulldf[1], fulldf[2], variogram_model=krig_type, verbose=True, enable_plotting=True,
                          coordinates_type="euclidean", nlags=nlags, exact_values=exact, pseudo_inv=True)
     # setting up the grid and executing the results over it

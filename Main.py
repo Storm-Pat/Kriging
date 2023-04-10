@@ -13,7 +13,10 @@ import CV
 import proj
 import numpy as np
 import LargeInterp
-
+import chauvsmall
+import proj2
+import utm
+import glob
 
 # main function
 def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
@@ -24,7 +27,6 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     print(EXV)
     print(dropdown)
     print(dirtval)
-    LargeInterp.csvfile(CSV)
     # create a dropping sequence that allows the gui to send the values to the back end
     home_dir = os.path.expanduser('~')
     # "naming" directories to store i/o operations
@@ -38,6 +40,10 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     path2 = os.path.join(path1, directory1)  # CSV
     path3 = os.path.join(path1, directory2)  # SHP
     path4 = os.path.join(path1, directory3)  # output files
+    if not os.path.exists(path1):
+        os.mkdir(path1)
+    else:
+        path1 = path1
     if not os.path.exists(path2):
         os.mkdir(path2)
     else:
@@ -67,16 +73,35 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     # really the main while loop where the magic happens after initializing everything
     shutil.copy(CSV, path2)
     shutil.copy(SHP, path3)
+    shpfull = (shutil.copy(SHP, path3))
+    shpname = os.path.splitext(SHP)
+    shpbase = shpname[0]
+    shpcpg = shpbase + '.cpg'
+    shpdbf = shpbase + '.dbf'
+    shpprj = shpbase + '.prj'
+    shpsbn = shpbase + '.sbn'
+    shpsbx = shpbase + '.sbx'
+    shpxml = shpbase + '.shp.xml'
+    shpshx = shpbase + '.shx'
+    shutil.copy(shpcpg, path3)
+    shutil.copy(shpdbf, path3)
+    shutil.copy(shpprj, path3)
+    shutil.copy(shpsbn, path3)
+    shutil.copy(shpsbx, path3)
+    shutil.copy(shpxml, path3)
+    shutil.copy(shpshx, path3)
     # copying data over to program directories (its more fun this way, trust me)
     while True:
         # concatenating and labeling the data
-        long, lat, df, fulldf = proj.tolatlon()
+        long, lat, df, fulldf, lengthfile = proj.tolatlon()
         # for the large datasets that need to be interpolated
-        if len(df) > 20000:
-            idx = pd.IndexSlice
-            zi, yi, xi = np.histogram2d(df.iloc[idx[:, 1]], df.iloc[idx[:, 0]], bins=(140, 140),
-                                        weights=df.iloc[idx[:, 2]], normed=False)
-            counts, _, _ = np.histogram2d(df.iloc[idx[:, 1]], df.iloc[idx[:, 0]], bins=(140, 140))
+        if lengthfile > 20000:
+            # since iver3 datasets tend to be very large, we are taking all the data and putting it over a sparse matrix
+            # we then take the average of that grid and put it into a larger grid that has kriging applied to it
+            # this will significantly reduce computational time
+            zi, yi, xi = np.histogram2d(lat, long, bins=(140, 140),
+                                        weights=df)
+            counts, _, _ = np.histogram2d(lat, long, bins=(140, 140))
             zi = zi / counts
             # correcting for the difference in zi and the axis
             xi = np.linspace(xi.min(), xi.max(), len(zi), zi.shape[0], dtype="float64")
@@ -86,10 +111,21 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
             # get valid vals
             x1 = xx[~zi.mask]
             y1 = yy[~zi.mask]
-            z1 = zi[~zi.mask] * -1
-            df = pd.DataFrame({'Longitude': y1, 'Latitude': x1, 'Depth_m': z1}).astype("float64")
+            z1 = zi[~zi.mask]
+            df1 = pd.DataFrame({'Longitude': y1, 'Latitude': x1, 'Depth_m': z1}).astype("float64")
+            # creates separate dataframe for all values from large file
+            # turns the data into useful info
+            df1 = df1.drop(df.index[0])
+            long, lat, df, fulldf = proj2.tolatlon(df1)
+            dftolatlon = utm.to_latlon(lat, long, 18, 'T')
+            df = pd.DataFrame({'Latitude': dftolatlon[0], 'Longitude': dftolatlon[1], 'Depth_m': df}).astype("float64")
+            df2 = Chauv.chauv(df, dirtval)
+            print(len(df2))
+            long, lat, df, fulldf = proj2.tolatlon(df2)
         # cleaning algorithm,returns chosen dataframe
-        df = Chauv.chauv(df, dirtval)
+        print("this is before chauv")
+        print(len(df))
+        df = chauvsmall.chauv(df, dirtval)
         # re-projecting the shapefile
         shape, lat_max, lat_min, lon_max, lon_min = Repo.repo(long, lat, df, CSV)
         # writing shape file
@@ -139,5 +175,5 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
         Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)
 
         # clipping the tif here, using the cookie cutter and outputted tiff underwrite tiff function.
-        Clip.clip(SHP)
+        Clip.clip(shpfull)
         return

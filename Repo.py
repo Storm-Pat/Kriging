@@ -22,7 +22,6 @@ def repo(long, lat, df, CSV):
         # reading it back out to a file under the cookie cutters, separate from the og shapefiles
         # grabbing the min and maxes
         extrema = shapefull.bounds
-        print(extrema)
         lon_min = (extrema['minx'].min())
         lon_max = (extrema['maxx'].max())
         lat_min = (extrema['miny'].min())

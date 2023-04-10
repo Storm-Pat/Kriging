@@ -2,7 +2,7 @@ import rasterio
 import fiona
 import rasterio.mask
 import os
-import geopandas
+
 
 home_dir = os.path.expanduser('~')
 parent_directory = 'Field-Interp-Tool'
@@ -18,16 +18,15 @@ path5 = os.path.join(path2, 'kriging_with_mask.tif')
 path6 = os.path.join(path2, 'kriging_error_with_mask.tif')
 
 
-def clip(SHP):
-    shapepath = os.path.join(shaper, SHP)
-    # reprojecting shape file
-
-    with fiona.open(shapepath, 'r') as f:
-        shapes = [feature["geometry"] for feature in f]
-    # opening raster and clipping now inshallah (I copied this context manager from the rasterio wiki lol)
-    # https://rasterio.readthedocs.io/en/latest/topics/masking-by-shapefile.html pretty fucking niftey
+def clip(shpfull):
+    shapetry = shpfull
+    with fiona.open(shapetry, 'r') as shapefile:
+        crs = shapefile.crs
+        shapes = [feature["geometry"] for feature in shapefile]
+    # opening raster and clipping now
+    # https://rasterio.readthedocs.io/en/latest/topics/masking-by-shapefile.html
     with rasterio.open(path3) as src:
-        out_image, out_transform = rasterio.mask.mask(src, shapes, invert=False)
+        out_image, out_transform = rasterio.mask.mask(src, shapes, invert=False, crop=True)
         out_meta = src.meta
         # raster output data, once again straight from the wiki
     out_meta.update({"driver": "GTiff",
@@ -35,11 +34,11 @@ def clip(SHP):
                      "width": out_image.shape[2],
                      "transform": out_transform})
     # outputting the sliced tiff
-    with rasterio.open(path5, 'w', **out_meta) as f:
-        f.write(out_image)
-    # Same as above but now clipping the erorr
+    with rasterio.open(path5, 'w', **out_meta) as feature:
+        feature.write(out_image)
+    # Same as above but now clipping the error
     with rasterio.open(path4) as src:
-        out_image, out_transform = rasterio.mask.mask(src, shapes, invert=False)
+        out_image, out_transform = rasterio.mask.mask(src, shapes, invert=False, crop=True)
         out_meta = src.meta
         # raster output data, once again straight from the wiki
     out_meta.update({"driver": "GTiff",
@@ -47,7 +46,7 @@ def clip(SHP):
                      "width": out_image.shape[2],
                      "transform": out_transform})
     # outputting the sliced tiff
-    with rasterio.open(path6, 'w', **out_meta) as f:
-        f.write(out_image)
+    with rasterio.open(path6, 'w', **out_meta) as feature:
+        feature.write(out_image)
     # a error about projections will be thrown over the fact the shapefile was converted, so this is here for
     # readability

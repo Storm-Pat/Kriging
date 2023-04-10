@@ -13,10 +13,8 @@ path2 = os.path.join(path1, directory1)
 def chauv(df, dirtval):
     # defining boundary p value
     maxdev = 1 / (2 * len(df))
-    print(maxdev)
     # initializing what will be clean data_frame
     df_clean = df
-    print(len(df_clean))
     # dirty array
     dirty = []
     # mean value
@@ -25,17 +23,16 @@ def chauv(df, dirtval):
     sigma = df.std()
     # z score function
     z = lambda i: abs(i - mean) / sigma
-    for i in df['Depth_m']:
+    for i in df:
         # computing z score
         zscore = z(i)
         # applying z score to 1-erf to produce a probability
         deviation = sp.special.erfc(zscore)
         # checking the probability function output against the boundary
-        if deviation['Depth_m'] < maxdev:
+        if deviation < maxdev:
             dirty.append(i)
             df_clean = df_clean[df_clean != i]
             df_clean = df_clean.reset_index(drop=True)
-            df_clean = df_clean.drop(df_clean.index[:])
 
     while True:
         y_n = dirtval

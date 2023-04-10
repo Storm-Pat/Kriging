@@ -26,7 +26,6 @@ def bigboi(df, long_min, long_max, latit_min, latit_max):
     CSV = os.listdir(path6)
     if os.path.exists(path6):
         df = pd.read_csv(*CSV)
-        shaper, long_min, long_max, latit_min, latit_max = Repo.repo(CSV)
         x = df.iloc[:, 0]
         y = df.iloc[:, 1]
         z = df.iloc[:, 2]
