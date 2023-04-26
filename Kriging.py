@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from pykrige.ok import OrdinaryKriging
 import os
+import pandas as pd
 import rasterio
 import rasterio.mask
 import fiona
@@ -22,22 +23,30 @@ path3 = os.path.join(path1, 'Kriging-error.tif')
 def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact):
     # formatting the data
     # doing the kriging
-    print(fulldf)
-    OK = OrdinaryKriging(fulldf[0], fulldf[1], fulldf[2], variogram_model=krig_type, verbose=True, enable_plotting=True,
-                         coordinates_type="euclidean", nlags=nlags, exact_values=exact, pseudo_inv=True)
+    idx = pd.IndexSlice
+    print(type(fulldf))
+    if type(fulldf) == list:
+        lat = fulldf[0]
+        long = fulldf[1]
+        depth = fulldf[2]
+    else:
+        lat = fulldf.iloc[idx[:, 0]]
+        long = fulldf.iloc[idx[:, 1]]
+        depth = fulldf.iloc[idx[:, 2]]
+    OK = OrdinaryKriging(lat, long, depth,
+                         variogram_model=krig_type, verbose=True, enable_plotting=True, coordinates_type="euclidean",
+                         nlags=nlags, exact_values=exact, pseudo_inv=True)
     # setting up the grid and executing the results over it
 
     # base resolution is 1 pixel per meter
     resofull = 0.00001
     # .00001 (roughly 3ft by 3ft, translates to 1 square meter **roughly**)
 
-    # TODO ask the user to enter a value for the resolution (or have option in GUI) then do the math to convert
     # created grid in order to execute the interpolation over
     gridx = np.arange(start=lat_min, stop=lat_max, step=resofull)
     gridy = np.arange(start=lon_min, stop=lon_max, step=resofull)
     # executing interpolation over defined grid, with the cookie cutter shape masking outside values
     z, ss = (OK.execute("grid", gridx, gridy, mask=shape))
-    # TODO try and get multiprocessing working on this
     # have to apply this transpose for it all to work correctly, as the origin is flipped in calculation
     z = z.T
     ss = ss.T

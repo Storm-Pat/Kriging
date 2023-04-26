@@ -21,7 +21,6 @@ path6 = os.path.join(path2, 'kriging_error_with_mask.tif')
 def clip(shpfull):
     shapetry = shpfull
     with fiona.open(shapetry, 'r') as shapefile:
-        crs = shapefile.crs
         shapes = [feature["geometry"] for feature in shapefile]
     # opening raster and clipping now
     # https://rasterio.readthedocs.io/en/latest/topics/masking-by-shapefile.html

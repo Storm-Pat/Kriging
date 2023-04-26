@@ -5,37 +5,75 @@ from scipy import interpolate
 import Chauv
 import Repo
 import os
+import Write_Shape
+import Write_Tiff
+import Kriging
+import Clip
 
 
-def csvfile(CSV):
-    return CSV
-
-
-def bigboi(df, long_min, long_max, latit_min, latit_max):
-    dirt = True
-    dirtval = dirt
-    df, dirt = Chauv.chauv(df, dirtval)
-    home_dir = os.path.expanduser('~')
-    path1 = 'Documents'
-    path2 = os.path.join(home_dir, path1)
-    path3 = 'Field-Interp-Tool'
-    path4 = os.path.join(path2, path3)
-    path5 = 'Input_CSV'
-    path6 = os.path.join(path4, path5)
-    os.path.exists(path6)
-    CSV = os.listdir(path6)
-    if os.path.exists(path6):
-        df = pd.read_csv(*CSV)
-        x = df.iloc[:, 0]
-        y = df.iloc[:, 1]
-        z = df.iloc[:, 2]
-        print("1")
-        # setting x gridd
-        gridx = np.arange(x.min(), x.max(), .001, dtype="float64")
-        # setting y grid
-        gridy = np.arange(y.min(), y.max(), .001, dtype="float64")
-        print("2")
-        g = interpolate.interp2d(x, y, z, kind='quintic')
-        preds = g(gridx, gridy)
-        plt.imshow(preds)
-        plt.show()
+def large(lat, long, depth, dirtval, lags_true, EXV, dropdown, shpfull):
+    # larger datasets take a very long time, we are taking all the data and putting it over a sparse matrix
+    # we then take the average of that grid and put it into a larger grid that has kriging applied to it
+    # this will significantly reduce computational time
+    zi, yi, xi = np.histogram2d(lat, long, bins=(140, 140),
+                                weights=depth)
+    counts, _, _ = np.histogram2d(lat, long, bins=(140, 140))
+    zi = zi / counts
+    # correcting for the difference in zi and the axis
+    xi = np.linspace(xi.min(), xi.max(), len(zi), zi.shape[0], dtype="float64")
+    yi = np.linspace(yi.min(), yi.max(), len(zi), zi.shape[1], dtype="float64")
+    zi = np.ma.masked_invalid(zi)
+    xx, yy = np.meshgrid(xi, yi)
+    # get valid vals
+    x1 = xx[~zi.mask]
+    y1 = yy[~zi.mask]
+    z1 = zi[~zi.mask]
+    df1 = pd.DataFrame({'Longitude': y1, 'Latitude': x1, 'Depth_m': z1}).astype("float64")
+    shape, lat_max, lat_min, lon_max, lon_min = Repo.repo(long, lat, depth)
+    # writing shape file
+    idx = pd.IndexSlice
+    long = df1.iloc[idx[:, 0]]
+    lat = df1.iloc[idx[:, 1]]
+    depth = df1.iloc[idx[:, 2]]
+    fulldataframe = [long, lat, depth]
+    Write_Shape.write_file(long, lat, depth)
+    print("onto kriging")
+    while True:
+        intlag = 0
+        if lags_true == "6":
+            intlag = 6
+        elif lags_true == "8":
+            intlag = 8
+        elif lags_true == "10":
+            intlag = 10
+        elif lags_true == "15":
+            intlag = 15
+        elif lags_true == "20":
+            intlag = 20
+        else:
+            intlag = 20
+            # if the value is somehow undetermined, intlag (number of lags) will automatically be set at 20
+        nlags = intlag
+        try:
+            nlags = intlag
+            break
+            # since the GUI returns a string, setting a new variable to a value will avoid a string to int cast
+        except:
+            continue
+            # grabs the value from the gui received for exact values
+    exact = EXV
+    # START OF KRIGING #
+    # we pass shape to mask the interpolation
+    # Also going to error check in case of singular matrix or overload
+    krig_type = dropdown
+    print(lat_min)
+    print(lat_max)
+    print(lon_min)
+    print(lon_max)
+    z, ss, gridx, gridy = Kriging.kriging(fulldataframe, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact)
+    # writing the tiff function, the grid is passed to define resolution, data frame defines domain and range,
+    # z for values
+    Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)
+    # clipping the tif here, using the cookie cutter and outputted tiff underwrite tiff function.
+    Clip.clip(shpfull)
+    return

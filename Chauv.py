@@ -10,45 +10,45 @@ path1 = os.path.join(path0, parent_directory)
 path2 = os.path.join(path1, directory1)
 
 
-def chauv(df, dirtval):
-    # defining boundary p value
-    maxdev = 1 / (2 * len(df))
-    print(maxdev)
-    # initializing what will be clean data_frame
-    df_clean = df
-    print(len(df_clean))
-    # dirty array
-    dirty = []
-    # mean value
-    mean = df.mean()
-    # standard deviation
-    sigma = df.std()
-    # z score function
-    z = lambda i: abs(i - mean) / sigma
-    for i in df['Depth_m']:
-        # computing z score
-        zscore = z(i)
-        # applying z score to 1-erf to produce a probability
-        deviation = sp.special.erfc(zscore)
-        # checking the probability function output against the boundary
-        if deviation['Depth_m'] < maxdev:
-            dirty.append(i)
-            df_clean = df_clean[df_clean != i]
-            df_clean = df_clean.reset_index(drop=True)
-            df_clean = df_clean.drop(df_clean.index[:])
+def chauv(depth, dirtval, long, lat, elip, seaval):
+    if dirtval is True:
+        iternum = 0
+        idx = pd.IndexSlice
+        # defining boundary p value
+        maxdev = 1 / (2 * len(depth))
+        # initializing what will be clean data_frame
+        # dirty array
+        dirty = []
+        # mean value
+        mean = depth.mean()
+        # standard deviation
+        sigma = depth.std()
+        # z score function
+        z = (lambda a: abs(a - mean) / sigma)
+        haeww = depth + elip
+        msl = haeww + 34.52
+        # creates a function with an anonymous variable (a) that will be filled in the for loop
+        dataframe = pd.DataFrame({'X': long, 'Y': lat, 'Depth_m': depth, 'Z': haeww, 'Z_msl': msl}).astype("float64")
+        # creating a dataframe
+        for i in depth:
+            iternum = iternum + 1
+            print(iternum)
+            # computing z score
+            zscore = z(i)
+            # applying z score to 1-erf to produce a probability
+            deviation = (sp.special.erfc(zscore))
+            # checking the probability function output against the boundary
+            if deviation < maxdev:
+                iternum = iternum - 1
+                dirty.append(i)
+                dataframe.drop(dataframe.index[iternum], inplace=True)
+        path3 = os.path.join(path2, "clean_data.csv")
+        dataframe.to_csv(path3)
+        print(dirty)
+        return dataframe
 
-    while True:
-        y_n = dirtval
-        # setting local variable to the variable received from the gui
-        if y_n:
-            # writing out dataframe
-            path3 = os.path.join(path2, "clean_data.csv")
-            df_clean.to_csv(path3)
-            return df_clean
-        elif y_n is False:
-            # writing it out again
-            path4 = os.path.join(path2, "raw_data.csv")
-            df.to_csv(path4)
-            return df
-        else:
-            continue
+    elif dirtval is False:
+        dataframe = pd.DataFrame({'Longitude': long, 'Latitude': lat, 'Depth_m': depth}).astype("float64")
+        path3 = os.path.join(path2, "full_data.csv")
+        dataframe.to_csv(path3)
+        return dataframe

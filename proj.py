@@ -3,13 +3,7 @@ import glob
 import pandas as pd
 
 
-def tolatlon():
-    home_dir = os.path.expanduser('~')
-    parent_directory = 'Field-Interp-Tool'
-    directory1 = 'Input_CSV'
-    path0 = os.path.join(home_dir, 'Documents')
-    path1 = os.path.join(path0, parent_directory)
-    path2 = os.path.join(path1, directory1)
+def tolatlon(path2):
     # introducing the path where the input files are being stored
     CSV = os.listdir(path2)
     for x in CSV:

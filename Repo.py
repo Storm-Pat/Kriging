@@ -2,7 +2,7 @@ import geopandas
 import os
 
 
-def repo(long, lat, df, CSV):
+def repo(long, lat, df):
     home_dir = os.path.expanduser('~')
     path1 = 'Documents'
     path2 = os.path.join(home_dir, path1)
@@ -12,13 +12,12 @@ def repo(long, lat, df, CSV):
     output = 'output_files'
     path6 = os.path.join(path4, path5)
     os.path.exists(path6)
-    path7 = os.path.join(path6, CSV)
     path8 = os.path.join(path4, output)
     path9 = os.path.join(path8, "cookie-cutter.shp")
     if os.path.exists(path6):
         # changing coords, changes the projection too
         columns = {'long': long, 'lat': lat}
-        shapefull = geopandas.GeoDataFrame(columns, geometry=geopandas.points_from_xy(lat, long, df), crs="EPSG:4326")
+        shapefull = geopandas.GeoDataFrame(columns, geometry=geopandas.points_from_xy(long, lat, df), crs="EPSG:4326")
         # reading it back out to a file under the cookie cutters, separate from the og shapefiles
         # grabbing the min and maxes
         extrema = shapefull.bounds

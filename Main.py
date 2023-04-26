@@ -1,5 +1,3 @@
-#!./usr/bin/env python
-# I refuse to use oop for this project
 import shutil
 import os
 import pandas as pd
@@ -15,18 +13,11 @@ import numpy as np
 import LargeInterp
 import chauvsmall
 import proj2
+import UTMconvert
 import utm
-import glob
 
 # main function
-def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
-    print(CSV)
-    print(SHP)
-    print(ML)
-    print(lags_true)
-    print(EXV)
-    print(dropdown)
-    print(dirtval)
+def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, elip, seaval, ML, lags_true, EXV, dropdown, dirtval):
     # create a dropping sequence that allows the gui to send the values to the back end
     home_dir = os.path.expanduser('~')
     # "naming" directories to store i/o operations
@@ -40,6 +31,7 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     path2 = os.path.join(path1, directory1)  # CSV
     path3 = os.path.join(path1, directory2)  # SHP
     path4 = os.path.join(path1, directory3)  # output files
+    # if the directories are not created, they will auto generate within the users documents folder
     if not os.path.exists(path1):
         os.mkdir(path1)
     else:
@@ -66,15 +58,14 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
         os.mkdir(path4)
     else:
         path4 = path4
-
-    # actually creating and appending directories
-    # call the GUI
-
-    # really the main while loop where the magic happens after initializing everything
+    # end of directory creation
     shutil.copy(CSV, path2)
     shutil.copy(SHP, path3)
+    # copying over the input files to their input folders
     shpfull = (shutil.copy(SHP, path3))
+    # used for the clipping function to determine the path of the copied shapefile
     shpname = os.path.splitext(SHP)
+    # splitting the shapefiles original path to get just the name (represented in the variable "shpbase")
     shpbase = shpname[0]
     shpcpg = shpbase + '.cpg'
     shpdbf = shpbase + '.dbf'
@@ -83,6 +74,7 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     shpsbx = shpbase + '.sbx'
     shpxml = shpbase + '.shp.xml'
     shpshx = shpbase + '.shx'
+    # getting the names of the other files linked to the shapefile
     shutil.copy(shpcpg, path3)
     shutil.copy(shpdbf, path3)
     shutil.copy(shpprj, path3)
@@ -90,90 +82,68 @@ def dropSEQ(CSV, SHP, ML, lags_true, EXV, dropdown, dirtval):
     shutil.copy(shpsbx, path3)
     shutil.copy(shpxml, path3)
     shutil.copy(shpshx, path3)
-    # copying data over to program directories (its more fun this way, trust me)
+    # copying all the other shapefiles over to the input directory
+    long, lat, depth, fulldf, lengthfile = proj.tolatlon(path2)
+    # proj splits the csv into 3 parts, lat, long, and depth
+    # also returns the complete csv with negative values as well as the length of the file (will be used)
+    dataframe = Chauv.chauv(depth, dirtval, long, lat, elip, seaval)
+    if utmval is True:
+        lat, long, depth, dataframeutm = UTMconvert.utmconverter(utmletterval, utmnumberval, fulldf)
+        # calls the function to convert from UTM coordinates to WGS84 EPSG 4326
+        # returns a dataframe
+        fulldf = dataframeutm
+    else:
+        fulldf = fulldf
+    if lengthfile > 20000:
+        LargeInterp.large(lat, long, depth, dirtval, lags_true, EXV, dropdown, shpfull)
+        # function for .csv files with more than 20000 points (this reduces computational time)
+    df = proj2.createdataframe(lat, long, depth)
+    shape, lat_max, lat_min, lon_max, lon_min = Repo.repo(long, lat, depth)
+    # writing shape file
+    Write_Shape.write_file(long, lat, depth)
+    # searching for best parameters to try
     while True:
-        # concatenating and labeling the data
-        long, lat, df, fulldf, lengthfile = proj.tolatlon()
-        # for the large datasets that need to be interpolated
-        if lengthfile > 20000:
-            # since iver3 datasets tend to be very large, we are taking all the data and putting it over a sparse matrix
-            # we then take the average of that grid and put it into a larger grid that has kriging applied to it
-            # this will significantly reduce computational time
-            zi, yi, xi = np.histogram2d(lat, long, bins=(140, 140),
-                                        weights=df)
-            counts, _, _ = np.histogram2d(lat, long, bins=(140, 140))
-            zi = zi / counts
-            # correcting for the difference in zi and the axis
-            xi = np.linspace(xi.min(), xi.max(), len(zi), zi.shape[0], dtype="float64")
-            yi = np.linspace(yi.min(), yi.max(), len(zi), zi.shape[1], dtype="float64")
-            zi = np.ma.masked_invalid(zi)
-            xx, yy = np.meshgrid(xi, yi)
-            # get valid vals
-            x1 = xx[~zi.mask]
-            y1 = yy[~zi.mask]
-            z1 = zi[~zi.mask]
-            df1 = pd.DataFrame({'Longitude': y1, 'Latitude': x1, 'Depth_m': z1}).astype("float64")
-            # creates separate dataframe for all values from large file
-            # turns the data into useful info
-            df1 = df1.drop(df.index[0])
-            long, lat, df, fulldf = proj2.tolatlon(df1)
-            dftolatlon = utm.to_latlon(lat, long, 18, 'T')
-            df = pd.DataFrame({'Latitude': dftolatlon[0], 'Longitude': dftolatlon[1], 'Depth_m': df}).astype("float64")
-            df2 = Chauv.chauv(df, dirtval)
-            print(len(df2))
-            long, lat, df, fulldf = proj2.tolatlon(df2)
-        # cleaning algorithm,returns chosen dataframe
-        print("this is before chauv")
-        print(len(df))
-        df = chauvsmall.chauv(df, dirtval)
-        # re-projecting the shapefile
-        shape, lat_max, lat_min, lon_max, lon_min = Repo.repo(long, lat, df, CSV)
-        # writing shape file
-        Write_Shape.write_file(long, lat, df)
-        # searching for best parameters to try
-        while True:
-            if ML:
-                # calling our wonderful ML function
-                CV.cv(df)
-                break
-            elif not ML:
-                break
-                # ML is a boolean value from the GUI
-        # prompting user to run kriging type
-        # nlags checking
-        while True:
-            intlag = 0
-            if lags_true == "6":
-                intlag = 6
-            elif lags_true == "8":
-                intlag = 8
-            elif lags_true == "10":
-                intlag = 10
-            elif lags_true == "15":
-                intlag = 15
-            elif lags_true == "20":
-                intlag = 20
-            else:
-                intlag = 20
-                # if the value is somehow undetermined, intlag (number of lags) will automatically be set at 20
+        if ML:
+            # calling our wonderful ML function
+            CV.cv(dataframe)
+            break
+        elif not ML:
+            break
+            # ML is a boolean value from the GUI
+    # prompting user to run kriging type
+    # nlags checking
+    while True:
+        intlag = 0
+        if lags_true == "6":
+            intlag = 6
+        elif lags_true == "8":
+            intlag = 8
+        elif lags_true == "10":
+            intlag = 10
+        elif lags_true == "15":
+            intlag = 15
+        elif lags_true == "20":
+            intlag = 20
+        else:
+            intlag = 20
+            # if the value is somehow undetermined, intlag (number of lags) will automatically be set at 20
+        nlags = intlag
+        try:
             nlags = intlag
-            try:
-                nlags = intlag
-                break
-                # since the GUI returns a string, setting a new variable to a value will avoid a string to int cast
-            except:
-                continue
-                # grabs the value from the gui received for exact values
-        exact = EXV
-        # START OF KRIGING #
-        # we pass shape to mask the interpolation
-        # Also going to error check in case of singular matrix or overload
-        krig_type = dropdown
-        z, ss, gridx, gridy = Kriging.kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact)
-        # writing the tiff function, the grid is passed to define resolution, data frame defines domain and range,
-        # z for values
-        Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)
-
-        # clipping the tif here, using the cookie cutter and outputted tiff underwrite tiff function.
-        Clip.clip(shpfull)
-        return
+            break
+            # since the GUI returns a string, setting a new variable to a value will avoid a string to int cast
+        except:
+            continue
+            # grabs the value from the gui received for exact values
+    exact = EXV
+    # START OF KRIGING #
+    # we pass shape to mask the interpolation
+    # Also going to error check in case of singular matrix or overload
+    krig_type = dropdown
+    z, ss, gridx, gridy = Kriging.kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact)
+    # writing the tiff function, the grid is passed to define resolution, data frame defines domain and range,
+    # z for values
+    Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)
+    # clipping the tif here, using the cookie cutter and outputted tiff underwrite tiff function.
+    Clip.clip(shpfull)
+    return

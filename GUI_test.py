@@ -5,7 +5,7 @@ import os
 import Main
 
 gui = Tk(className="-Field Interpolation Tool [FIT]-")
-gui.geometry("340x560")
+gui.geometry("340x740")
 
 
 def maingui():
@@ -51,9 +51,40 @@ def maingui():
         text=".CSV file must be in X, Y, Z format (Lat/Long/Depth)",
         fg="Red"
     )
-    csvwarn2 = tk.Label(
-        text=".CSV file should be in coordinate system WGS84 EPSG 4326",
-        fg="Red"
+
+    utmval = tk.BooleanVar(gui)
+
+    def dirt():
+        if utmsel['text'] == 'NO':
+            utmsel['text'] = 'YES'
+            utmval.set(True)
+            # sends out a value for true
+            # true means they want the dirty values
+        else:
+            utmsel['text'] = 'NO'
+            utmval.set(False)
+            # false means they do not want the dirty values
+
+    utmlab = tk.Label(text="Is the .csv in UTM coordinates?")
+    utmsel = tk.Button(
+        text="NO",
+        command=dirt
+    )
+
+    utmletterval = tk.StringVar(gui)
+
+    utmletter = tk.Label(text="Enter the zone designator:")
+    utmletent = tk.Entry(
+        textvariable=utmletterval,
+        width=4
+    )
+
+    utmnumberval = tk.IntVar(gui)
+
+    utmnumber = tk.Label(text="Enter the zone number:")
+    utmnument = tk.Entry(
+        textvariable=utmnumberval,
+        width=4
     )
 
     # put csvs here
@@ -87,6 +118,24 @@ def maingui():
     )
     # put OG shapefiles
     ML = tk.BooleanVar(gui)
+
+    elip = tk.Label(text="What's the height above ellipsoid:")
+
+    elipval = tk.DoubleVar(gui)
+
+    elipgrab = tk.Entry(
+        textvariable=elipval,
+        fg='red'
+    )
+
+    seatext = tk.Label(text="Enter the mean sea level:")
+
+    seaval = tk.DoubleVar(gui)
+
+    seaent = tk.Entry(
+        textvariable=seaval,
+        fg='red'
+    )
 
     def skynet():
         if mlbutton["text"] == "Machine Learning = OFF":
@@ -137,10 +186,19 @@ def maingui():
     entry_one.pack()
     csvbutton.pack()
     csvwarn.pack()
-    csvwarn2.pack()
+    utmlab.pack()
+    utmsel.pack()
+    utmletter.pack()
+    utmletent.pack()
+    utmnumber.pack()
+    utmnument.pack()
     inp_two.pack()
     entry_two.pack()
     shpbutton.pack()
+    elip.pack()
+    elipgrab.pack()
+    seatext.pack()
+    seaent.pack()
     mlbutton.pack(pady=5)
     MLwarning1.pack()
     MLwarning2.pack()
@@ -262,8 +320,8 @@ def maingui():
         fg="White",
         activebackground="Green",
         width=10,
-        command=lambda: Main.dropSEQ(CSV.get(), SHP.get(), ML.get(), lags_true.get(), EXV.get(),
-                                     dropdown.get(), dirtval.get())
+        command=lambda: Main.dropSEQ(CSV.get(), utmval.get(), utmletterval.get(), utmnumberval.get(), SHP.get(), elipval.get(), seaval.get(),
+                                     ML.get(), lags_true.get(), EXV.get(), dropdown.get(), dirtval.get())
     )
     # just creates a button to click when the program is ready to run, then sends values to main
     runbutton.pack(pady=3)
