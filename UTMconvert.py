@@ -12,5 +12,8 @@ def utmconverter(letter, number, fulldf):
     depthvalue = depth
     return latitude, longitude, depthvalue, df
 
-def returnutm():
-    return
+def returnutm(letter, number, lat, long):
+    dftoutm = utm.from_latlon(lat, long, number, letter)
+    latitude = dftoutm[0]
+    longitude = dftoutm[1]
+    return latitude, longitude

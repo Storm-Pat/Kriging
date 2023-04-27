@@ -7,6 +7,7 @@ import rasterio
 import rasterio.mask
 import fiona
 import multiprocessing
+import UTMconvert
 
 
 # TODO figure out a way to include multiprocessing in this section
@@ -20,7 +21,7 @@ path1 = os.path.join(path0, parent_directory)
 path2 = os.path.join(path1, 'Kriging-result.tif')
 path3 = os.path.join(path1, 'Kriging-error.tif')
 
-def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact):
+def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact, letter, number):
     # formatting the data
     # doing the kriging
     idx = pd.IndexSlice
@@ -39,7 +40,7 @@ def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type,
     # setting up the grid and executing the results over it
 
     # base resolution is 1 pixel per meter
-    resofull = 0.00001
+    resofull = 0.000005
     # .00001 (roughly 3ft by 3ft, translates to 1 square meter **roughly**)
 
     # created grid in order to execute the interpolation over
@@ -47,6 +48,9 @@ def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type,
     gridy = np.arange(start=lon_min, stop=lon_max, step=resofull)
     # executing interpolation over defined grid, with the cookie cutter shape masking outside values
     z, ss = (OK.execute("grid", gridx, gridy, mask=shape))
+    print(gridx)
+    print(gridy)
+    # UTMconvert.returnutm(letter, number, gridx, gridy)
     # have to apply this transpose for it all to work correctly, as the origin is flipped in calculation
     z = z.T
     ss = ss.T

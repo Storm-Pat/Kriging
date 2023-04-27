@@ -140,7 +140,7 @@ def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, elip, seaval, ML, lags
     # we pass shape to mask the interpolation
     # Also going to error check in case of singular matrix or overload
     krig_type = dropdown
-    z, ss, gridx, gridy = Kriging.kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact)
+    z, ss, gridx, gridy = Kriging.kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact, utmletterval, utmnumberval)
     # writing the tiff function, the grid is passed to define resolution, data frame defines domain and range,
     # z for values
     Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)

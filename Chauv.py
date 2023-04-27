@@ -38,6 +38,10 @@ def chauv(depth, dirtval, long, lat, elip, seaval):
             # applying z score to 1-erf to produce a probability
             deviation = (sp.special.erfc(zscore))
             # checking the probability function output against the boundary
+            if i > 0:
+                iternum = iternum - 1
+                dirty.append(i)
+                dataframe.drop(dataframe.index[iternum], inplace=True)
             if deviation < maxdev:
                 iternum = iternum - 1
                 dirty.append(i)
