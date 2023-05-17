@@ -10,7 +10,7 @@ path1 = os.path.join(path0, parent_directory)
 path2 = os.path.join(path1, directory1)
 
 
-def chauv(depth, dirtval, long, lat, elip, seaval):
+def chauv(depth, dirtval, long, lat, seaval):
     if dirtval is True:
         iternum = 0
         idx = pd.IndexSlice
@@ -25,10 +25,9 @@ def chauv(depth, dirtval, long, lat, elip, seaval):
         sigma = depth.std()
         # z score function
         z = (lambda a: abs(a - mean) / sigma)
-        haeww = depth + elip
-        msl = haeww + 34.52
+        msl = (seaval * 3.28084) + depth
         # creates a function with an anonymous variable (a) that will be filled in the for loop
-        dataframe = pd.DataFrame({'X': long, 'Y': lat, 'Depth_m': depth, 'Z': haeww, 'Z_msl': msl}).astype("float64")
+        dataframe = pd.DataFrame({'X': long, 'Y': lat, 'Z_msl': msl}).astype("float64")
         # creating a dataframe
         for i in depth:
             iternum = iternum + 1
@@ -52,7 +51,8 @@ def chauv(depth, dirtval, long, lat, elip, seaval):
         return dataframe
 
     elif dirtval is False:
-        dataframe = pd.DataFrame({'Longitude': long, 'Latitude': lat, 'Depth_m': depth}).astype("float64")
+        msl = (seaval * 3.28084) + depth
+        dataframe = pd.DataFrame({'Longitude': long, 'Latitude': lat,  'Z_msl': msl}).astype("float64")
         path3 = os.path.join(path2, "full_data.csv")
         dataframe.to_csv(path3)
         return dataframe

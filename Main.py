@@ -17,7 +17,7 @@ import UTMconvert
 import utm
 
 # main function
-def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, elip, seaval, ML, lags_true, EXV, dropdown, dirtval):
+def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, seaval, ML, lags_true, EXV, dropdown, dirtval):
     # create a dropping sequence that allows the gui to send the values to the back end
     home_dir = os.path.expanduser('~')
     # "naming" directories to store i/o operations
@@ -86,7 +86,7 @@ def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, elip, seaval, ML, lags
     long, lat, depth, fulldf, lengthfile = proj.tolatlon(path2)
     # proj splits the csv into 3 parts, lat, long, and depth
     # also returns the complete csv with negative values as well as the length of the file (will be used)
-    dataframe = Chauv.chauv(depth, dirtval, long, lat, elip, seaval)
+    fulldf = Chauv.chauv(depth, dirtval, long, lat, seaval)
     if utmval is True:
         lat, long, depth, dataframeutm = UTMconvert.utmconverter(utmletterval, utmnumberval, fulldf)
         # calls the function to convert from UTM coordinates to WGS84 EPSG 4326
@@ -105,7 +105,7 @@ def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, elip, seaval, ML, lags
     while True:
         if ML:
             # calling our wonderful ML function
-            CV.cv(dataframe)
+            CV.cv(fulldf)
             break
         elif not ML:
             break

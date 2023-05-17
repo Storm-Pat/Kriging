@@ -21,11 +21,10 @@ path1 = os.path.join(path0, parent_directory)
 path2 = os.path.join(path1, 'Kriging-result.tif')
 path3 = os.path.join(path1, 'Kriging-error.tif')
 
-def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact, letter, number):
+def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact):
     # formatting the data
     # doing the kriging
     idx = pd.IndexSlice
-    print(type(fulldf))
     if type(fulldf) == list:
         lat = fulldf[0]
         long = fulldf[1]
@@ -40,7 +39,7 @@ def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type,
     # setting up the grid and executing the results over it
 
     # base resolution is 1 pixel per meter
-    resofull = 0.000005
+    resofull = 0.00001
     # .00001 (roughly 3ft by 3ft, translates to 1 square meter **roughly**)
 
     # created grid in order to execute the interpolation over

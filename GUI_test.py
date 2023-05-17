@@ -119,15 +119,6 @@ def maingui():
     # put OG shapefiles
     ML = tk.BooleanVar(gui)
 
-    elip = tk.Label(text="What's the height above ellipsoid:")
-
-    elipval = tk.DoubleVar(gui)
-
-    elipgrab = tk.Entry(
-        textvariable=elipval,
-        fg='red'
-    )
-
     seatext = tk.Label(text="Enter the mean sea level:")
 
     seaval = tk.DoubleVar(gui)
@@ -195,8 +186,6 @@ def maingui():
     inp_two.pack()
     entry_two.pack()
     shpbutton.pack()
-    elip.pack()
-    elipgrab.pack()
     seatext.pack()
     seaent.pack()
     mlbutton.pack(pady=5)
@@ -320,7 +309,7 @@ def maingui():
         fg="White",
         activebackground="Green",
         width=10,
-        command=lambda: Main.dropSEQ(CSV.get(), utmval.get(), utmletterval.get(), utmnumberval.get(), SHP.get(), elipval.get(), seaval.get(),
+        command=lambda: Main.dropSEQ(CSV.get(), utmval.get(), utmletterval.get(), utmnumberval.get(), SHP.get(), seaval.get(),
                                      ML.get(), lags_true.get(), EXV.get(), dropdown.get(), dirtval.get())
     )
     # just creates a button to click when the program is ready to run, then sends values to main
