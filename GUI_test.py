@@ -5,7 +5,7 @@ import os
 import Main
 
 gui = Tk(className="-Field Interpolation Tool [FIT]-")
-gui.geometry("340x740")
+gui.geometry("340x600")
 
 
 def maingui():
@@ -94,7 +94,6 @@ def maingui():
         shp_path = filedialog.askopenfile()
         shp_copy = shp_path
         # shp_path is the true file path
-        # TODO have the gui return this instead of the string
         shp_copy = shp_copy.__str__()
         # retrieves the file
         shp_copy2 = shp_copy.replace("<_io.TextIOWrapper name='", '').replace("' mode='r' encoding='cp1252'>", '')
@@ -128,48 +127,6 @@ def maingui():
         fg='red'
     )
 
-    def skynet():
-        if mlbutton["text"] == "Machine Learning = OFF":
-            mlbutton["text"] = "Machine Learning = ON"
-            ML.set(True)
-        else:
-            mlbutton["text"] = "Machine Learning = OFF"
-            ML.set(False)
-
-    mlbutton = tk.Button(
-        text="Machine Learning = OFF",
-        bg="white",
-        fg='black',
-        activebackground='purple',
-        width=19,
-        state="disabled",
-        command=skynet
-    )
-    # Machine learning
-    # TODO should have it so that this will run and suggest the best settings for the kriging
-    MLwarning1 = tk.Label(
-        text="WARNING: Machine Learning finds the best fit settings.",
-        fg="red"
-    )
-    MLwarning2 = tk.Label(
-        text="This will take several minutes to run.",
-        fg="red"
-    )
-
-    # TODO disable the ML button when the ML button is off and/or there is no .csv file present
-
-    terminator = tk.Button(
-        text="Run Machine Learning",
-        bg="Grey",
-        fg="White",
-        width=18,
-        state="disabled"
-
-        # command=lambda: machinelearning(CSV.get(), ML.get())
-    )
-    # button to run ML
-
-    # TODO this should freeze the program while ML runs, a pop-up box should appear while it runs, then says when done
     space0 = tk.Label(text="______________________________________________________________________________")
     space0.pack()
     # makes a line to separate the GUI (just for visuals)
@@ -188,10 +145,6 @@ def maingui():
     shpbutton.pack()
     seatext.pack()
     seaent.pack()
-    mlbutton.pack(pady=5)
-    MLwarning1.pack()
-    MLwarning2.pack()
-    terminator.pack()
     space1 = tk.Label(text="______________________________________________________________________________")
     space1.pack()
 
@@ -309,8 +262,8 @@ def maingui():
         fg="White",
         activebackground="Green",
         width=10,
-        command=lambda: Main.dropSEQ(CSV.get(), utmval.get(), utmletterval.get(), utmnumberval.get(), SHP.get(), seaval.get(),
-                                     ML.get(), lags_true.get(), EXV.get(), dropdown.get(), dirtval.get())
+        command=lambda: Main.dropSEQ(CSV.get(), utmval.get(), utmletterval.get(), utmnumberval.get(), SHP.get(),
+                                     seaval.get(), lags_true.get(), EXV.get(), dropdown.get(), dirtval.get())
     )
     # just creates a button to click when the program is ready to run, then sends values to main
     runbutton.pack(pady=3)

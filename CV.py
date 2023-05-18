@@ -23,4 +23,3 @@ def cv(df):
     if hasattr(estimator, "best_score_"):
         print("best_score R² = {:.3f}".format(estimator.best_score_))
         print("best_params = ", estimator.best_params_)
-        # TODO need to find a way to have this modify the GUI to show the best fit params

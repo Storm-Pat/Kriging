@@ -1,23 +1,18 @@
 import shutil
 import os
-import pandas as pd
 import Kriging
 import Write_Shape
 import Write_Tiff
 import Repo
 import Chauv
 import Clip
-import CV
 import proj
-import numpy as np
 import LargeInterp
-import chauvsmall
-import proj2
 import UTMconvert
-import utm
+
 
 # main function
-def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, seaval, ML, lags_true, EXV, dropdown, dirtval):
+def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, seaval, lags_true, EXV, dropdown, dirtval):
     # create a dropping sequence that allows the gui to send the values to the back end
     home_dir = os.path.expanduser('~')
     # "naming" directories to store i/o operations
@@ -95,21 +90,13 @@ def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, seaval, ML, lags_true,
     else:
         fulldf = fulldf
     if lengthfile > 20000:
-        LargeInterp.large(lat, long, depth, dirtval, lags_true, EXV, dropdown, shpfull)
+        LargeInterp.large(lat, long, depth, lags_true, EXV, dropdown, shpfull)
         # function for .csv files with more than 20000 points (this reduces computational time)
-    df = proj2.createdataframe(lat, long, depth)
     shape, lat_max, lat_min, lon_max, lon_min = Repo.repo(long, lat, depth)
     # writing shape file
     Write_Shape.write_file(long, lat, depth)
     # searching for best parameters to try
-    while True:
-        if ML:
-            # calling our wonderful ML function
-            CV.cv(fulldf)
-            break
-        elif not ML:
-            break
-            # ML is a boolean value from the GUI
+    # ML is a boolean value from the GUI
     # prompting user to run kriging type
     # nlags checking
     while True:
@@ -140,10 +127,9 @@ def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, seaval, ML, lags_true,
     # we pass shape to mask the interpolation
     # Also going to error check in case of singular matrix or overload
     krig_type = dropdown
-    z, ss, gridx, gridy = Kriging.kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact, utmletterval, utmnumberval)
+    z, ss, gridx, gridy = Kriging.kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact)
     # writing the tiff function, the grid is passed to define resolution, data frame defines domain and range,
     # z for values
     Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)
     # clipping the tif here, using the cookie cutter and outputted tiff underwrite tiff function.
     Clip.clip(shpfull)
-    return

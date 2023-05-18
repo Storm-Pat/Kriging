@@ -27,7 +27,7 @@ def clip(shpfull):
     with rasterio.open(path3) as src:
         out_image, out_transform = rasterio.mask.mask(src, shapes, invert=False, crop=True)
         out_meta = src.meta
-        # raster output data, once again straight from the wiki
+        # raster output data
     out_meta.update({"driver": "GTiff",
                      "height": out_image.shape[1],
                      "width": out_image.shape[2],
@@ -39,7 +39,7 @@ def clip(shpfull):
     with rasterio.open(path4) as src:
         out_image, out_transform = rasterio.mask.mask(src, shapes, invert=False, crop=True)
         out_meta = src.meta
-        # raster output data, once again straight from the wiki
+        # raster output data
     out_meta.update({"driver": "GTiff",
                      "height": out_image.shape[1],
                      "width": out_image.shape[2],

@@ -25,6 +25,8 @@ def chauv(depth, dirtval, long, lat, seaval):
         sigma = depth.std()
         # z score function
         z = (lambda a: abs(a - mean) / sigma)
+        # calculation to find the depth as mean sea level in feet
+        # meters to feet: 1 meter = 3.28084 feet
         msl = (seaval * 3.28084) + depth
         # creates a function with an anonymous variable (a) that will be filled in the for loop
         dataframe = pd.DataFrame({'X': long, 'Y': lat, 'Z_msl': msl}).astype("float64")
@@ -51,6 +53,7 @@ def chauv(depth, dirtval, long, lat, seaval):
         return dataframe
 
     elif dirtval is False:
+        # if the error is left within the csv
         msl = (seaval * 3.28084) + depth
         dataframe = pd.DataFrame({'Longitude': long, 'Latitude': lat,  'Z_msl': msl}).astype("float64")
         path3 = os.path.join(path2, "full_data.csv")

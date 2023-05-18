@@ -11,7 +11,7 @@ path2 = os.path.join(path1, directory1)
 path3 = os.path.join(path2, 'unclipped_kriging.tif')
 path4 = os.path.join(path2, 'kriging_error_no_mask.tif')
 
-# masking function alhumduallah
+# masking function
 def write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max):
     # making geo-reference first defining domain and range of the projection, len x y have to be flipped respectively
     # for the correct resolution to hold.

@@ -1,17 +1,13 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
-from scipy import interpolate
-import Chauv
 import Repo
-import os
 import Write_Shape
 import Write_Tiff
 import Kriging
 import Clip
 
 
-def large(lat, long, depth, dirtval, lags_true, EXV, dropdown, shpfull):
+def large(lat, long, depth, lags_true, EXV, dropdown, shpfull):
     # larger datasets take a very long time, we are taking all the data and putting it over a sparse matrix
     # we then take the average of that grid and put it into a larger grid that has kriging applied to it
     # this will significantly reduce computational time
@@ -66,14 +62,9 @@ def large(lat, long, depth, dirtval, lags_true, EXV, dropdown, shpfull):
     # we pass shape to mask the interpolation
     # Also going to error check in case of singular matrix or overload
     krig_type = dropdown
-    print(lat_min)
-    print(lat_max)
-    print(lon_min)
-    print(lon_max)
     z, ss, gridx, gridy = Kriging.kriging(fulldataframe, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact)
     # writing the tiff function, the grid is passed to define resolution, data frame defines domain and range,
     # z for values
     Write_Tiff.write_file(z, ss, gridx, gridy, lat_min, lat_max, lon_min, lon_max)
     # clipping the tif here, using the cookie cutter and outputted tiff underwrite tiff function.
     Clip.clip(shpfull)
-    return

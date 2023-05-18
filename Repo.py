@@ -18,7 +18,7 @@ def repo(long, lat, df):
         # changing coords, changes the projection too
         columns = {'long': long, 'lat': lat}
         shapefull = geopandas.GeoDataFrame(columns, geometry=geopandas.points_from_xy(long, lat, df), crs="EPSG:4326")
-        # reading it back out to a file under the cookie cutters, separate from the og shapefiles
+        # reading it back out to a file under the cookie cutters, separate from the shapefiles
         # grabbing the min and maxes
         extrema = shapefull.bounds
         lon_min = (extrema['minx'].min())

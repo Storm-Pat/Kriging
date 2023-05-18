@@ -1,5 +1,4 @@
 import os
-import glob
 import pandas as pd
 
 
@@ -7,7 +6,7 @@ def tolatlon(path2):
     # introducing the path where the input files are being stored
     CSV = os.listdir(path2)
     for x in CSV:
-        # set up for list of files (for later in development)
+        # set up for list of files (for later in development(possibly))
         path3 = os.path.join(path2, x)
         # checking the path
         # creating a list of all the files in the csv director

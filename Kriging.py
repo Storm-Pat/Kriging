@@ -49,7 +49,6 @@ def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type,
     z, ss = (OK.execute("grid", gridx, gridy, mask=shape))
     print(gridx)
     print(gridy)
-    # UTMconvert.returnutm(letter, number, gridx, gridy)
     # have to apply this transpose for it all to work correctly, as the origin is flipped in calculation
     z = z.T
     ss = ss.T
