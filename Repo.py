@@ -25,5 +25,7 @@ def repo(long, lat, df):
         lon_max = (extrema['maxx'].max())
         lat_min = (extrema['miny'].min())
         lat_max = (extrema['maxy'].max())
+        # sending the points to a point shapefile
         shapefull.to_file(path9, driver="ESRI Shapefile")
+        # returning the mins/maxes/and the point shapefile
         return shapefull, lat_max, lat_min, lon_max, lon_min

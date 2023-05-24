@@ -13,6 +13,7 @@ path2 = os.path.join(path1, directory1)
 def chauv(depth, dirtval, long, lat, seaval):
     if dirtval is True:
         iternum = 0
+        error = 0
         idx = pd.IndexSlice
         # defining boundary p value
         maxdev = 1 / (2 * len(depth))
@@ -27,7 +28,7 @@ def chauv(depth, dirtval, long, lat, seaval):
         z = (lambda a: abs(a - mean) / sigma)
         # calculation to find the depth as mean sea level in feet
         # meters to feet: 1 meter = 3.28084 feet
-        msl = (seaval * 3.28084) + depth
+        msl = (seaval + depth) * 3.28084
         # creates a function with an anonymous variable (a) that will be filled in the for loop
         dataframe = pd.DataFrame({'X': long, 'Y': lat, 'Z_msl': msl}).astype("float64")
         # creating a dataframe
@@ -41,15 +42,18 @@ def chauv(depth, dirtval, long, lat, seaval):
             # checking the probability function output against the boundary
             if i > 0:
                 iternum = iternum - 1
+                error = error + 1
                 dirty.append(i)
                 dataframe.drop(dataframe.index[iternum], inplace=True)
             if deviation < maxdev:
                 iternum = iternum - 1
+                error = error + 1
                 dirty.append(i)
                 dataframe.drop(dataframe.index[iternum], inplace=True)
         path3 = os.path.join(path2, "clean_data.csv")
         dataframe.to_csv(path3)
         print(dirty)
+        print(error)
         return dataframe
 
     elif dirtval is False:

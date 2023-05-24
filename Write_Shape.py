@@ -14,7 +14,6 @@ path4 = os.path.join(path2, "Complete-shape.shp")
 
 # defining the paths
 
-
 def write_file(long, lat, df):
     columns = {'lat': lat, 'long': long, 'depth(m)': df}
     # creating a csv with corrected negative depth values

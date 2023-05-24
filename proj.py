@@ -18,9 +18,10 @@ def tolatlon(path2):
         lat = df.iloc[idx[:, 1]].astype(float)
         df = df.iloc[idx[:, 2]].astype(float)
         # settings the depth values negative
-        df1 = -1 * df
-        fulldf = [long, lat, df1]
-        # removing positive values
-        # df = df1 >= 0.0
-        lengthfile = (len(df1))
-        return long, lat, df1, fulldf, lengthfile
+        depth = -1 * df
+        # building the dataframe
+        fulldf = [long, lat, depth]
+        # getting the length of the dataframe
+        lengthfile = (len(depth))
+        # returning the long, lat, depth, dataframe, and length of the file
+        return long, lat, depth, fulldf, lengthfile

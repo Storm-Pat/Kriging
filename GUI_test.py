@@ -4,6 +4,7 @@ from tkinter import filedialog
 import os
 import Main
 
+# declaring the size of the GUI as well as the name
 gui = Tk(className="-Field Interpolation Tool [FIT]-")
 gui.geometry("340x600")
 

@@ -3,14 +3,7 @@ import matplotlib.pyplot as plt
 from pykrige.ok import OrdinaryKriging
 import os
 import pandas as pd
-import rasterio
-import rasterio.mask
-import fiona
-import multiprocessing
-import UTMconvert
 
-
-# TODO figure out a way to include multiprocessing in this section
 # the section for kriging is very slow and could benefit from kriging, although it may already utilize MP
 
 home_dir = os.path.expanduser('~')
@@ -20,6 +13,7 @@ path0 = os.path.join(home_dir, 'Documents')
 path1 = os.path.join(path0, parent_directory)
 path2 = os.path.join(path1, 'Kriging-result.tif')
 path3 = os.path.join(path1, 'Kriging-error.tif')
+
 
 def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type, exact):
     # formatting the data
@@ -47,8 +41,6 @@ def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type,
     gridy = np.arange(start=lon_min, stop=lon_max, step=resofull)
     # executing interpolation over defined grid, with the cookie cutter shape masking outside values
     z, ss = (OK.execute("grid", gridx, gridy, mask=shape))
-    print(gridx)
-    print(gridy)
     # have to apply this transpose for it all to work correctly, as the origin is flipped in calculation
     z = z.T
     ss = ss.T

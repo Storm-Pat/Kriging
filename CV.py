@@ -1,7 +1,10 @@
 from sklearn.model_selection import GridSearchCV
-import numpy as np
 from pykrige.rk import Krige
 
+'''This file is supposed to be used for ML (machine learning), or to find the best possible settings for an
+interpolation. However, since it takes a very long time on larger datasets (and that's primarily what is input),
+it is not necessary or even economical to have this run in the field. The option to use this has been removed from the 
+GUI and is suggested it remain so, however this file is still here in case the use of ML seems viable.'''
 
 def cv(df):
     # the kriging parameters to predict
@@ -19,7 +22,6 @@ def cv(df):
     y = df_np[:, 2]
     # grid searcher
     estimator.fit(X=X, y=y)
-    # printing best params (copied this from the wiki, like straight up lol)
     if hasattr(estimator, "best_score_"):
         print("best_score R² = {:.3f}".format(estimator.best_score_))
         print("best_params = ", estimator.best_params_)
