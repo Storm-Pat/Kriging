@@ -41,8 +41,6 @@ def kriging(fulldf, shape, lat_min, lat_max, lon_min, lon_max, nlags, krig_type,
     gridy = np.arange(start=lon_min, stop=lon_max, step=resofull)
     # executing interpolation over defined grid, with the cookie cutter shape masking outside values
     z, ss = (OK.execute("grid", gridx, gridy, mask=shape))
-    print(gridx)
-    print(gridy)
     # have to apply this transpose for it all to work correctly, as the origin is flipped in calculation
     z = z.T
     ss = ss.T

@@ -33,7 +33,6 @@ def large(lat, long, depth, lags_true, EXV, dropdown, shpfull):
     depth = df1.iloc[idx[:, 2]]
     fulldataframe = [long, lat, depth]
     Write_Shape.write_file(long, lat, depth)
-    print("onto kriging")
     while True:
         intlag = 0
         if lags_true == "6":
