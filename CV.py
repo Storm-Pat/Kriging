@@ -1,5 +1,4 @@
 from sklearn.model_selection import GridSearchCV
-import numpy as np
 from pykrige.rk import Krige
 
 
@@ -19,7 +18,6 @@ def cv(df):
     y = df_np[:, 2]
     # grid searcher
     estimator.fit(X=X, y=y)
-    # printing best params (copied this from the wiki, like straight up lol)
     if hasattr(estimator, "best_score_"):
         print("best_score R² = {:.3f}".format(estimator.best_score_))
         print("best_params = ", estimator.best_params_)

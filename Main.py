@@ -81,7 +81,7 @@ def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, seaval, lags_true, EXV
     long, lat, depth, fulldf, lengthfile = proj.tolatlon(path2)
     # proj splits the csv into 3 parts, lat, long, and depth
     # also returns the complete csv with negative values as well as the length of the file (will be used)
-    fulldf = Chauv.chauv(depth, dirtval, long, lat, seaval)
+    fulldf = Chauv.chauv(depth, dirtval, long, lat, seaval, utmletterval, utmnumberval)
     if utmval is True:
         lat, long, depth, dataframeutm = UTMconvert.utmconverter(utmletterval, utmnumberval, fulldf)
         # calls the function to convert from UTM coordinates to WGS84 EPSG 4326

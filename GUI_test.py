@@ -4,6 +4,7 @@ from tkinter import filedialog
 import os
 import Main
 
+# declaring the size of the GUI as well as the name
 gui = Tk(className="-Field Interpolation Tool [FIT]-")
 gui.geometry("340x600")
 
@@ -118,7 +119,7 @@ def maingui():
     # put OG shapefiles
     ML = tk.BooleanVar(gui)
 
-    seatext = tk.Label(text="Enter the mean sea level:")
+    seatext = tk.Label(text="Enter the height above ellipsoid:")
 
     seaval = tk.DoubleVar(gui)
 
