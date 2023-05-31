@@ -1,5 +1,6 @@
 import pandas as pd
 import scipy as sp
+import numpy as np
 import os
 import UTMconvert
 
@@ -11,7 +12,7 @@ path1 = os.path.join(path0, parent_directory)
 path2 = os.path.join(path1, directory1)
 
 
-def chauv(depth, dirtval, long, lat, seaval, utmletterval, utmnumberval):
+def chauv(depth, dirtval, long, lat, seaval, utmval, utmletterval, utmnumberval):
     if dirtval is True:
         iternum = 0
         idx = pd.IndexSlice
@@ -28,10 +29,8 @@ def chauv(depth, dirtval, long, lat, seaval, utmletterval, utmnumberval):
         z = (lambda a: abs(a - mean) / sigma)
         # calculation to find the depth as mean sea level in feet
         # meters to feet: 1 meter = 3.28084 feet
-        msl = seaval + depth
         # creates a function with an anonymous variable (a) that will be filled in the for loop
-        bathy = "MTRI_Bathyboat"
-        dataframe = pd.DataFrame({'X': long, 'Y': lat, 'Z_hae': msl}).astype("float64")
+        dataframe = pd.DataFrame({'X': long, 'Y': lat, 'Z_hae': depth}).astype("float64")
         # creating a dataframe
         for i in depth:
             iternum = iternum + 1
@@ -49,7 +48,8 @@ def chauv(depth, dirtval, long, lat, seaval, utmletterval, utmnumberval):
                 iternum = iternum - 1
                 dirty.append(i)
                 dataframe.drop(dataframe.index[iternum], inplace=True)
-        idx = pd.IndexSlice
+            else:
+                continue
         if type(dataframe) == list:
             latdf = dataframe[0]
             longdf = dataframe[1]
@@ -59,10 +59,26 @@ def chauv(depth, dirtval, long, lat, seaval, utmletterval, utmnumberval):
             longdf = dataframe.iloc[idx[:, 1]]
             depthdf = dataframe.iloc[idx[:, 2]]
         path3 = os.path.join(path2, "clean_data.csv")
-        TRUElat, TRUElong, depthvalue, df = UTMconvert.utmconverter(utmletterval, utmnumberval, dataframe)
-        dataframeforschoh = pd.DataFrame({'Latitude': TRUElat, 'Longitude': TRUElong, 'Depth_m': depthdf,
-                                          'Alt_hae_m': msl, 'Northing': longdf, 'Easting': latdf}).astype("float64")
-        dataframeforschoh.to_csv(path3)
+        iternumtwo = 0
+        msl = seaval + depthdf
+        if utmval is True:
+            TRUElat, TRUElong, depthvalue, df = UTMconvert.utmconverter(utmletterval, utmnumberval, dataframe)
+            dataframeforschoh = pd.DataFrame(
+                {'Latitude': TRUElat, 'Longitude': TRUElong, 'Depth_m': depthdf,
+                 'Alt_hae_m': msl, 'Northing': longdf, 'Easting': latdf}).astype("float64")
+            np.where(pd.isnull(dataframeforschoh))
+            dataframeforschoh.to_csv(path3)
+        else:
+            longdf, latdf = UTMconvert.backtoutm(utmletterval, utmnumberval, dataframe)
+            dataframeforschoh = pd.DataFrame(
+                {'Latitude': lat, 'Longitude': long, 'Depth_m': depthdf,
+                 'Alt_hae_m': msl, 'Northing': longdf, 'Easting': latdf}).astype("float64")
+            for i in depthdf:
+                iternumtwo = iternumtwo + 1
+                if dataframeforschoh[0].empty is True:
+                    dataframeforschoh.drop(dataframeforschoh.index[iternumtwo], inplace=True)
+            dataframeforschoh.to_csv(path3)
+
         print(dirty)
         return dataframe
 

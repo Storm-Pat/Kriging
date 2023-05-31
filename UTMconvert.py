@@ -20,3 +20,18 @@ def utmconverter(letter, number, fulldf):
     depthvalue = depth
     # returning both individual columns and the whole dataframe
     return latitude, longitude, depthvalue, df
+
+def backtoutm(letter, number, fulldf):
+    idx = pd.IndexSlice
+    if type(fulldf) == list:
+        long = fulldf[0]
+        lat = fulldf[1]
+        depth = fulldf[2]
+    else:
+        long = fulldf.iloc[idx[:, 0]]
+        lat = fulldf.iloc[idx[:, 1]]
+        depth = fulldf.iloc[idx[:, 2]]
+    utmdf = utm.from_latlon(long, lat, number, letter)
+    northing = utmdf[0]
+    easting = utmdf[1]
+    return northing, easting
