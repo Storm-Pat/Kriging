@@ -30,11 +30,12 @@ def chauv(depth, dirtval, long, lat, seaval, utmval, utmletterval, utmnumberval)
         # calculation to find the depth as mean sea level in feet
         # meters to feet: 1 meter = 3.28084 feet
         # creates a function with an anonymous variable (a) that will be filled in the for loop
-        dataframe = pd.DataFrame({'X': long, 'Y': lat, 'Z_hae': depth}).astype("float64")
+        msl = seaval + depth
+        # creating a dataframe that can be used for interpolation
+        dataframe = pd.DataFrame({'X': lat, 'Y': long, 'Z_hae': msl}).astype("float64")
         # creating a dataframe
         for i in depth:
             iternum = iternum + 1
-            print(iternum)
             # computing z score
             zscore = z(i)
             # applying z score to 1-erf to produce a probability
@@ -60,32 +61,75 @@ def chauv(depth, dirtval, long, lat, seaval, utmval, utmletterval, utmnumberval)
             depthdf = dataframe.iloc[idx[:, 2]]
         path3 = os.path.join(path2, "clean_data.csv")
         iternumtwo = 0
-        msl = seaval + depthdf
         if utmval is True:
             TRUElat, TRUElong, depthvalue, df = UTMconvert.utmconverter(utmletterval, utmnumberval, dataframe)
-            dataframeforschoh = pd.DataFrame(
-                {'Latitude': TRUElat, 'Longitude': TRUElong, 'Depth_m': depthdf,
-                 'Alt_hae_m': msl, 'Northing': longdf, 'Easting': latdf}).astype("float64")
-            np.where(pd.isnull(dataframeforschoh))
-            dataframeforschoh.to_csv(path3)
+            # creating a csv with coordinates in both WGS84 EPSG:4326 and UTM as well as with depth and HAE
+            dataframetwo = pd.DataFrame(
+                {'Latitude': TRUElat, 'Longitude': TRUElong, 'Depth_m': depth,
+                 'Alt_hae_m': msl, 'X_Northing': longdf, 'Y_Easting': latdf}).astype("float64")
+            for i in depth:
+                iternumtwo = iternumtwo + 1
+                zscore = z(i)
+                deviation = (sp.special.erfc(zscore))
+                if i > 0:
+                    iternumtwo = iternumtwo - 1
+                    dirty.append(i)
+                    dataframetwo.drop(dataframetwo.index[iternumtwo], inplace=True)
+                if deviation < maxdev:
+                    iternumtwo = iternumtwo - 1
+                    dirty.append(i)
+                    dataframetwo.drop(dataframetwo.index[iternumtwo], inplace=True)
+                else:
+                    continue
+            dataframetwo.to_csv(path3)
         else:
             longdf, latdf = UTMconvert.backtoutm(utmletterval, utmnumberval, dataframe)
-            dataframeforschoh = pd.DataFrame(
-                {'Latitude': lat, 'Longitude': long, 'Depth_m': depthdf,
-                 'Alt_hae_m': msl, 'Northing': longdf, 'Easting': latdf}).astype("float64")
-            for i in depthdf:
+            dataframetwo = pd.DataFrame(
+                {'Latitude': lat, 'Longitude': long, 'Depth_m': depth,
+                 'Alt_hae_m': msl, 'X_Northing': longdf, 'Y_Easting': latdf}).astype("float64")
+            for i in depth:
                 iternumtwo = iternumtwo + 1
-                if dataframeforschoh[0].empty is True:
-                    dataframeforschoh.drop(dataframeforschoh.index[iternumtwo], inplace=True)
-            dataframeforschoh.to_csv(path3)
+                zscore = z(i)
+                deviation = (sp.special.erfc(zscore))
+                if i > 0:
+                    iternumtwo = iternumtwo - 1
+                    dirty.append(i)
+                    dataframetwo.drop(dataframetwo.index[iternumtwo], inplace=True)
+                if deviation < maxdev:
+                    iternumtwo = iternumtwo - 1
+                    dirty.append(i)
+                    dataframetwo.drop(dataframetwo.index[iternumtwo], inplace=True)
+                else:
+                    continue
+            dataframetwo.to_csv(path3)
 
         print(dirty)
         return dataframe
 
     elif dirtval is False:
         # if the error is left within the csv
-        msl = seaval + depth
-        dataframe = pd.DataFrame({'Longitude': long, 'Latitude': lat, 'Z_hae': msl}).astype("float64")
         path3 = os.path.join(path2, "full_data.csv")
-        dataframe.to_csv(path3)
+        idx = pd.IndexSlice
+        dataframe = pd.DataFrame({'X': lat, 'Y': long, 'Z_hae': depth}).astype("float64")
+        if type(dataframe) == list:
+            latdf = dataframe[0]
+            longdf = dataframe[1]
+            depthdf = dataframe[2]
+        else:
+            latdf = dataframe.iloc[idx[:, 0]]
+            longdf = dataframe.iloc[idx[:, 1]]
+            depthdf = dataframe.iloc[idx[:, 2]]
+        msl = seaval + depthdf
+        if utmval is True:
+            TRUElat, TRUElong, depthvalue, df = UTMconvert.utmconverter(utmletterval, utmnumberval, dataframe)
+            dataframeforschoh = pd.DataFrame(
+                {'Latitude': TRUElat, 'Longitude': TRUElong, 'Depth_m': depthdf,
+                 'Alt_hae_m': msl, 'X_Northing': longdf, 'Y_Easting': latdf}).astype("float64")
+            dataframeforschoh.to_csv(path3)
+        else:
+            longdf, latdf = UTMconvert.backtoutm(utmletterval, utmnumberval, dataframe)
+            dataframeforschoh = pd.DataFrame(
+                {'Latitude': lat, 'Longitude': long, 'Depth_m': depth,
+                 'Alt_hae_m': msl, 'X_Northing': longdf, 'Y_Easting': latdf}).astype("float64")
+            dataframeforschoh.to_csv(path3)
         return dataframe

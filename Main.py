@@ -9,6 +9,7 @@ import Clip
 import proj
 import LargeInterp
 import UTMconvert
+import pandas as pd
 
 
 # main function
@@ -89,6 +90,15 @@ def dropSEQ(CSV, utmval, utmletterval, utmnumberval, SHP, seaval, lags_true, EXV
         fulldf = dataframeutm
     else:
         fulldf = fulldf
+        idx = pd.IndexSlice
+        if type(fulldf) == list:
+            lat = fulldf[0]
+            long = fulldf[1]
+            depth = fulldf[2]
+        else:
+            lat = fulldf.iloc[idx[:, 0]]
+            long = fulldf.iloc[idx[:, 1]]
+            depth = fulldf.iloc[idx[:, 2]]
     if lengthfile > 20000:
         LargeInterp.large(lat, long, depth, lags_true, EXV, dropdown, shpfull)
         # function for .csv files with more than 20000 points (this reduces computational time)
