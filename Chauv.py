@@ -18,7 +18,7 @@ def chauv(depth, dirtval, long, lat, seaval, utmval, utmletterval, utmnumberval)
         idx = pd.IndexSlice
         # defining boundary p value
         maxdev = 1 / (2 * len(depth))
-        # initializing what will be clean data_frame
+        # initializing what will be clean dataframe
         # dirty array
         dirty = []
         # mean value

@@ -47,5 +47,5 @@ def clip(shpfull):
     # outputting the sliced tiff
     with rasterio.open(path6, 'w', **out_meta) as feature:
         feature.write(out_image)
-    # a error about projections will be thrown over the fact the shapefile was converted, so this is here for
-    # readability
+    """If the shapefile you want to clip the tif to is in a different projection, it will not clip. The tif and
+    shapefile must be in the same projections in order to clip."""

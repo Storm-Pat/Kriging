@@ -33,6 +33,7 @@ def backtoutm(letter, number, fulldf):
         long = fulldf.iloc[idx[:, 1]]
         depth = fulldf.iloc[idx[:, 2]]
     utmdf = utm.from_latlon(lat, long, number, letter)
+    # splitting the dataframe into 2 (easting/northing) then returning the values
     easting = utmdf[0]
     northing = utmdf[1]
     return northing, easting

@@ -4,8 +4,6 @@ from pykrige.ok import OrdinaryKriging
 import os
 import pandas as pd
 
-# the section for kriging is very slow and could benefit from kriging, although it may already utilize MP
-
 home_dir = os.path.expanduser('~')
 directory = 'output_files'
 parent_directory = 'Field-Interp-Tool'
